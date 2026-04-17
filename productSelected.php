@@ -825,7 +825,6 @@
 <nav>
   <a href="index.php">Home</a>
   <a href="product1.php" class="active">Products</a>
-  <a href="product1.php">New Arrivals</a>
   <a href="about.php">About Us</a>
 </nav>
 
@@ -840,22 +839,22 @@
     <!-- Gallery -->
     <div class="hero-gallery">
       <div class="hero-main-img">
-        <img id="mainImg" src="" alt="Demon Slayer Cover" onerror="this.style.display='none'"/>
+        <img id="mainImg" src="images\jujutsu kaisen volume 1.jpeg" alt="Jujutsu Kaisen Cover" onerror="this.style.display='none'"/>
       </div>
       <div class="hero-thumbs">
-        <div class="hero-thumb active" onclick="switchThumb(this, 0)"><img src="" alt="" onerror="this.style.display='none'"/></div>
-        <div class="hero-thumb" onclick="switchThumb(this, 1)"><img src="" alt="" onerror="this.style.display='none'"/></div>
-        <div class="hero-thumb" onclick="switchThumb(this, 2)"><img src="" alt="" onerror="this.style.display='none'"/></div>
-        <div class="hero-thumb" onclick="switchThumb(this, 3)"><img src="" alt="" onerror="this.style.display='none'"/></div>
-        <div class="hero-thumb" onclick="switchThumb(this, 4)"><img src="" alt="" onerror="this.style.display='none'"/></div>
+        <div class="hero-thumb active" onclick="switchThumb(this, 0)"><img src="images\jujutsu kaisen volume 2.jpeg" alt="" onerror="this.style.display='none'"/></div>
+        <div class="hero-thumb" onclick="switchThumb(this, 1)"><img src="images\jujutsu kaisen volume 3.jpeg" alt="" onerror="this.style.display='none'"/></div>
+        <div class="hero-thumb" onclick="switchThumb(this, 2)"><img src="images\jujutsu kaisen volume 4.jpeg" alt="" onerror="this.style.display='none'"/></div>
+        <div class="hero-thumb" onclick="switchThumb(this, 3)"><img src="images\jujutsu kaisen volume 5.jpeg" alt="" onerror="this.style.display='none'"/></div>
+        <div class="hero-thumb" onclick="switchThumb(this, 4)"><img src="images\jujutsu kaisen volume 6.jpeg" alt="" onerror="this.style.display='none'"/></div>
       </div>
     </div>
 
     <!-- Info -->
     <div class="hero-info">
       <div>
-        <h1 class="hero-title">Demon Slayer</h1>
-        <p class="hero-subtitle">Infinite Castle Arc, Volume 1</p>
+        <h1 class="hero-title">Jujutsu Kaisen</h1>
+        <p class="hero-subtitle">Volume 1</p>
       </div>
 
       <div class="hero-rating">
@@ -897,24 +896,25 @@
     <div class="desc-block">
       <div class="desc-sub">Story</div>
       <p class="desc-text">
-        Step into a world where courage battles darkness in Demon Slayer: Kimetsu no Yaiba.
-        This globally acclaimed anime follows Tanjiro Kamado, a kind-hearted boy turned demon slayer after his
-        family is brutally attacked by demons, leaving only his sister Nezuko—who has been transformed into one.
-        Blending breathtaking animation, emotional storytelling, and intense sword-fighting action, Demon Slayer
-        delivers an unforgettable viewing experience. Each episode showcases stunning visuals and powerful
-        character development as Tanjiro journeys to avenge his family and find a cure for his sister.
+        Jujutsu Kaisen follows Yuji Itadori, a high school student who becomes 
+        the host of a powerful curse named Sukuna after swallowing a cursed object 
+        to save his friends. He is taken to Tokyo Jujutsu High, where he trains as a 
+        sorcerer alongside others to fight curses and collect Sukuna’s remaining 
+        fingers. As they battle stronger enemies, Yuji and his friends face dangerous 
+        missions and the harsh realities of death and sacrifice. The story explores themes 
+        of responsibility, survival, and what it means to protect others in a world filled with curses.
       </p>
 
       <div class="desc-sub">Details</div>
       <div class="desc-details">
-        <div class="detail-row"><span class="detail-key">Original Creator (Manga Author):</span><span class="detail-val">Koyoharu Gotouge</span></div>
-        <div class="detail-row"><span class="detail-key">Anime Studio:</span><span class="detail-val">Ufotable</span></div>
-        <div class="detail-row"><span class="detail-key">Director:</span><span class="detail-val">Haruo Sotozaki</span></div>
-        <div class="detail-row"><span class="detail-key">Genre:</span><span class="detail-val">Action, Adventure, Dark Fantasy</span></div>
-        <div class="detail-row"><span class="detail-key">Original Release:</span><span class="detail-val">2019</span></div>
+        <div class="detail-row"><span class="detail-key">Original Creator (Manga Author):</span><span class="detail-val">Gege Akutami</span></div>
+        <div class="detail-row"><span class="detail-key">Anime Studio:</span><span class="detail-val">MAPPA</span></div>
+        <div class="detail-row"><span class="detail-key">Director:</span><span class="detail-val">Sunghoo Park (Season 1), Shōta Goshozono (Season 2)</span></div>
+        <div class="detail-row"><span class="detail-key">Genre:</span><span class="detail-val">Action, Supernatural, Dark Fantasy</span></div>
+        <div class="detail-row"><span class="detail-key">Original Release:</span><span class="detail-val">October 2020</span></div>
         <div class="detail-row"><span class="detail-key">Source Material:</span><span class="detail-val">Manga series published in Weekly Shōnen Jump</span></div>
-        <div class="detail-row"><span class="detail-key">Main Character:</span><span class="detail-val">Tanjiro Kamado</span></div>
-        <div class="detail-row"><span class="detail-key">Notable Companion:</span><span class="detail-val">Nezuko Kamado</span></div>
+        <div class="detail-row"><span class="detail-key">Main Character:</span><span class="detail-val">Yuji Itadori</span></div>
+        <div class="detail-row"><span class="detail-key">Notable Companion:</span><span class="detail-val">Megumi Fushiguro, Nobara Kugisaki, and Satoru Gojo</span></div>
       </div>
     </div>
   </div>
@@ -930,7 +930,7 @@
       <!-- Card 1 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://m.media-amazon.com/images/I/81lBIqIlFQL.jpg" alt="Jujutsu Kaisen"/>
+          <img src="images\jujutsu kaisen volume 1.jpeg" alt="Jujutsu Kaisen"/>
         </div>
         <div class="product-title">Jujutsu Kaisen, Vol. 1</div>
         <div class="product-price">₱600.00</div>
@@ -940,7 +940,7 @@
       <!-- Card 2 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://m.media-amazon.com/images/I/91GpFkG4FUL.jpg" alt="Naruto Shippuden"/>
+          <img src="images\naruto shippuden volume 70.jpeg" alt="Naruto Shippuden"/>
         </div>
         <div class="product-title">Naruto: Shippuden</div>
         <div class="product-price">₱600.00</div>
@@ -950,7 +950,7 @@
       <!-- Card 3 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://m.media-amazon.com/images/I/91M9vhAvO4L.jpg" alt="One Piece"/>
+          <img src="images\one piece volume 100.jpeg" alt="One Piece"/>
         </div>
         <div class="product-title">One Piece, Vol. 100</div>
         <div class="product-price">₱600.00</div>
@@ -960,7 +960,7 @@
       <!-- Card 4 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://m.media-amazon.com/images/I/81cBbsz+2RL.jpg" alt="Bleach"/>
+          <img src="images\bleach volume 1.jpeg" alt="Bleach"/>
         </div>
         <div class="product-title">Bleach, Vol. 1</div>
         <div class="product-price">₱600.00</div>
@@ -970,7 +970,7 @@
       <!-- Card 5 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://m.media-amazon.com/images/I/71lMFd1ROBL.jpg" alt="One Punch Man"/>
+          <img src="images\one punch man volume 34.jpeg" alt="One Punch Man"/>
         </div>
         <div class="product-title">One Punch Man, Vol. 34</div>
         <div class="product-price">₱600.00</div>
@@ -1032,8 +1032,11 @@
           </div>
         </div>
         <p class="review-text">
-          "Absolutely stunning to read. The manga illustration is on another level every fight feels like a movie scene.
-          The story is simple but emotional, especially Tanjiro and Nezuko's bond. Highly recommended!"
+          "I literally started watching Jujutsu Kaisen because of Gojo and I don’t 
+          regret it at all 💀 He’s way too funny and chaotic, I thought he’d just be 
+          a cool strong character but he actually made the whole show way more 
+          entertaining. Ended up staying for the story, but Gojo is definitely the 
+          reason I got hooked in the first place."
         </p>
       </div>
 
@@ -1042,7 +1045,7 @@
         <div class="review-header">
           <div class="reviewer-avatar"></div>
           <div class="reviewer-meta">
-            <div class="reviewer-name">Benedict Garma</div>
+            <div class="reviewer-name">Aquilla Dela Cruz</div>
             <div class="reviewer-info">
               <span class="reviewer-stars">★★★★★</span>
               &nbsp; 2025-07-24 11:39 &nbsp;|&nbsp; Variation: Vol.1
@@ -1050,11 +1053,11 @@
           </div>
         </div>
         <p class="review-text">
-          "I started reading Demon Slayer out of curiosity, and I ended up finishing the entire manga in just a
-          few days. The storytelling is straightforward but very emotional, especially the relationship between
-          Tanjiro and Nezuko. What I really appreciated is how the author didn't drag the story too long—it has
-          a clear direction and a satisfying ending. The art may look simple at first, but during fight scenes,
-          it becomes incredibly expressive and intense. Definitely a must-read for manga fans."
+          "I watched Season 1 of Jujutsu Kaisen just out of curiosity, and now I’m completely 
+           hooked 😭 I couldn’t wait for the next season so I started buying the manga, and 
+           honestly it just made me even more obsessed. The story gets so intense and the 
+           characters hit way harder than I expected. Send help, my wallet is suffering but 
+           I have no regrets."
         </p>
       </div>
     </div>

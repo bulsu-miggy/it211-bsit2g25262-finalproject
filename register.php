@@ -128,7 +128,7 @@ input::placeholder {
         <br>
 
         <p class="login-link">
-            Already have an account? <a href="#">Login</a>
+            Already have an account? <a href="login.php">Login</a>
         </p>
 
     </div>

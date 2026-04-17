@@ -34,8 +34,8 @@ try {
         email VARCHAR(100) NOT NULL, 
         img_url VARCHAR(255),
         password TEXT NOT NULL,
-        login_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Monitor login date',
-        logout_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Monitor logout date'
+        login_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Monitor login date',
+        logout_date TIMESTAMP NULL DEFAULT NULL COMMENT 'Monitor logout date'
         )";
     
     try {
@@ -103,9 +103,9 @@ try {
         $conn->exec($query_create_books);
 
         $data_books = [
-            ['Julius Ceasar', ' Roman general and statesman known for conquering Gaul, winning a major civil war, and acting as dictator, which effectively transformed the Roman Republic into the Roman Empire.', 'images/JuliusCeasar.jpg', 'History', 'Unknown', '2020-01-01', 9.99, '', ''],
-            ['Napoleon Bonaparte', 'French military and political leader who rose to prominence during the French Revolution, crowning himself Emperor of the French in 1804.', 'images/Napoleon.jpg', 'History', 'Unknown', '2020-01-01', 9.99, '', ''],
-            ['Socrates', 'Philosopher known for his contributions to Western philosophy.', 'images/Socrates.jpg', 'Philosophy', 'Unknown', '2020-01-01', 9.99, '', '']
+            ['One Piece', 'A high-seas adventure following Monkey D. Luffy and his pirate crew in search of the ultimate treasure to become the Pirate King.', 'images/OnePiece.jpg', 'Adventure', 'Eiichiro Oda', '1997-07-22', 12.99, '', ''],
+            ['Fullmetal Alchemist', 'Two brothers use alchemy in a quest to restore their bodies after a disastrous attempt to bring their mother back to life.', 'images/FullmetalAlchemist.jpg', 'Fantasy', 'Hiromu Arakawa', '2001-07-12', 14.99, '', ''],
+            ['Berserk', 'A dark fantasy epic centered on Guts, a lone mercenary, and Griffith, the leader of a mercenary band called the Band of the Hawk.', 'images/Berserk.jpg', 'Seinen', 'Kentaro Miura', '1989-08-25', 19.99, '', '']
         ];
 
         if ($counter == 0) {

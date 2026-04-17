@@ -192,11 +192,7 @@ body {
 <ul>
 <li><a href="index.php">HOME</a></li>
 <li><a href="product.php">PRODUCTS</a></li>
-<li><a href="product1.php">NEW ARRIVALS</a></li>
 <li><a href="aboutus.php" class="active">ABOUT US</a></li>
-<li><a href="login.php">LOGIN</a></li>
-<li><a href="register.php">REGISTER</a></li>
-<li><a href="profile.php">PROFILE</a></li>
 </ul>
 </nav>
 </header>

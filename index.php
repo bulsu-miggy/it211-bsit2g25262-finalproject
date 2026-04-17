@@ -278,8 +278,7 @@ try {
 <nav>
     <a href="index.php" class="active">Home</a>
     <a href="product1.php">Products</a>
-    <a href="#">New Arrivals</a>
-    <a href="profile.php">My Profile</a>
+    <a href="aboutus.php">About us</a>
 </nav>
 
 <div class="hero-banner">
