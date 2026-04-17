@@ -1,600 +1,286 @@
 <?php
-require_once '../db/action/dbconfig.php';
-
-// Start session to get admin info
 session_start();
-
-// Get current admin info
-$adminUsername = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
-$adminInitial = strtoupper(substr($adminUsername, 0, 1));
-
-$message = '';
-$messageType = '';
-
-function isAjaxRequest() {
-    $requestedWith = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
-    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
-    return strtolower($requestedWith) === 'xmlhttprequest' || strpos($accept, 'application/json') !== false;
+if(!isset($_SESSION['admin_id'])) {
+    header("Location: login.php");
+    exit();
 }
+include('../config/db_connect.php'); 
 
-function sendJson($success, $message) {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode([
-        'success' => $success,
-        'message' => $message,
-    ]);
-    exit;
-}
+// --- 1. HANDLE ADD CATEGORY LOGIC ---
+if(isset($_POST['add_category'])) {
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $meta = mysqli_real_escape_string($conn, $_POST['meta_description']);
+    $is_active = isset($_POST['is_active']) ? 1 : 0;
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
-function normalizeCategoryImagePath($rawPath) {
-    $path = trim((string) $rawPath);
-    if ($path === '') {
-        return '';
+    $icon = "";
+    if(!empty($_FILES['icon']['name'])) {
+        $icon = time() . '_' . $_FILES['icon']['name'];
+        move_uploaded_file($_FILES['icon']['tmp_name'], "../uploads/" . $icon);
     }
 
-    $path = str_replace('\\', '/', $path);
-    if (preg_match('#^(https?:)?//#i', $path) || strpos($path, 'data:') === 0) {
-        return $path;
-    }
-
-    if (strpos($path, 'images/') === 0 || strpos($path, 'assets2/') === 0) {
-        return '../' . $path;
-    }
-
-    return '../images/products/' . basename($path);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    $action = $_POST['action'];
-    $isAjax = isAjaxRequest();
-
-    if ($action === 'add_category') {
-        $name = trim($_POST['name']);
-        $description = trim($_POST['description']);
-
-        if (empty($name)) {
-            $message = 'Category name is required.';
-            $messageType = 'error';
-            if ($isAjax) {
-                sendJson(false, $message);
-            }
-        } else {
-            try {
-                $stmt = $conn->prepare('INSERT INTO categories (name, description) VALUES (?, ?)');
-                $stmt->execute([$name, $description]);
-                $message = 'Category added successfully.';
-                $messageType = 'success';
-                if ($isAjax) {
-                    sendJson(true, $message);
-                }
-            } catch (PDOException $e) {
-                if ($e->getCode() === '23000') {
-                    $message = 'Category name already exists.';
-                } else {
-                    $message = 'Error adding category: ' . $e->getMessage();
-                }
-                $messageType = 'error';
-                if ($isAjax) {
-                    sendJson(false, $message);
-                }
-            }
-        }
-    }
-
-    if ($action === 'edit_category') {
-        $categoryId = intval($_POST['category_id']);
-        $name = trim($_POST['name']);
-        $description = trim($_POST['description']);
-
-        if (empty($name)) {
-            $message = 'Category name is required.';
-            $messageType = 'error';
-            if ($isAjax) {
-                sendJson(false, $message);
-            }
-        } else {
-            try {
-                $stmt = $conn->prepare('UPDATE categories SET name = ?, description = ? WHERE id = ?');
-                $stmt->execute([$name, $description, $categoryId]);
-                $message = 'Category updated successfully.';
-                $messageType = 'success';
-                if ($isAjax) {
-                    sendJson(true, $message);
-                }
-            } catch (PDOException $e) {
-                if ($e->getCode() === '23000') {
-                    $message = 'Category name already exists.';
-                } else {
-                    $message = 'Error updating category: ' . $e->getMessage();
-                }
-                $messageType = 'error';
-                if ($isAjax) {
-                    sendJson(false, $message);
-                }
-            }
-        }
-    }
-
-    if ($action === 'delete_category') {
-        $categoryId = intval($_POST['category_id']);
-
-        try {
-            $stmt = $conn->prepare('DELETE FROM categories WHERE id = ?');
-            $stmt->execute([$categoryId]);
-            $message = 'Category deleted successfully.';
-            $messageType = 'success';
-            if ($isAjax) {
-                sendJson(true, $message);
-            }
-        } catch (PDOException $e) {
-            $message = 'Error deleting category: ' . $e->getMessage();
-            $messageType = 'error';
-            if ($isAjax) {
-                sendJson(false, $message);
-            }
-        }
+    $insert = "INSERT INTO categories (name, meta_description, icon, is_active, is_featured) 
+               VALUES ('$name', '$meta', '$icon', '$is_active', '$is_featured')";
+    
+    if(mysqli_query($conn, $insert)) {
+        header("Location: categories.php?success=1");
+        exit();
     }
 }
 
-$stmt = $conn->prepare("SELECT
-    c.id,
-    c.name,
-    c.description,
-    COUNT(p.id) AS product_count,
-    (
-        SELECT p3.image
-        FROM products p3
-        WHERE p3.category_id = c.id AND p3.image IS NOT NULL AND TRIM(p3.image) <> ''
-        ORDER BY p3.created_at DESC, p3.id DESC
-        LIMIT 1
-    ) AS latest_image
-FROM categories c
-LEFT JOIN products p ON p.category_id = c.id
-GROUP BY c.id, c.name, c.description
-ORDER BY c.name ASC");
-$stmt->execute();
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// 2. Safety fetch function
+function getCount($conn, $query) {
+    $res = mysqli_query($conn, $query);
+    if ($res) {
+        $row = mysqli_fetch_assoc($res);
+        return $row['total'] ?? 0;
+    }
+    return 0;
+}
+
+$unread_count = getCount($conn, "SELECT (
+    (SELECT COUNT(*) FROM orders WHERE is_read = 0) + 
+    (SELECT COUNT(*) FROM users WHERE is_read = 0)
+) as total");
+
+// --- SEARCH LOGIC ---
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+$query = "SELECT c.*, COUNT(p.id) as product_count 
+          FROM categories c 
+          LEFT JOIN products p ON c.id = p.category_id 
+          WHERE 1=1";
+
+if (!empty($search)) {
+    $query .= " AND c.name LIKE '%$search%'";
+}
+
+$query .= " GROUP BY c.id ORDER BY c.id DESC";
+$result = mysqli_query($conn, $query);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categories</title>
-    <link rel="icon" type="image/png" href="../assets2/logo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="admin.css">
+    <title>Sparkverse | Manage Categories</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .products-img-placeholder {
-            width: 56px;
-            height: 56px;
+        :root {
+            --primary-yellow: #facc15;
+            --dark-sidebar: #1e293b;
+            --bg-light: #f8fafc;
         }
 
-        .products-img-placeholder img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); margin: 0; display: flex; }
+
+        .sidebar { width: 260px; background: var(--dark-sidebar); height: 100vh; position: fixed; color: white; padding: 20px 0; z-index: 100; }
+        .sidebar-header { text-align: center; padding-bottom: 30px; }
+        .logo-box { width: 80px; height: 80px; margin: 0 auto; border: 3px solid var(--primary-yellow); border-radius: 50%; overflow: hidden; }
+        .sidebar-menu { list-style: none; padding: 0; margin-top: 20px; }
+        .sidebar-menu li a { color: #94a3b8; text-decoration: none; padding: 15px 25px; display: block; font-weight: 500; transition: 0.3s; }
+        .sidebar-menu li.active a, .sidebar-menu li a:hover { background: #334155; color: white; border-left: 4px solid var(--primary-yellow); }
+
+        .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; }
+        .top-navbar { background: white; padding: 15px 40px; display: flex; align-items: center; justify-content: flex-end; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 90; }
+        
+        .notif-btn { position: relative; color: #64748b; font-size: 20px; text-decoration: none; padding: 5px; display: flex; align-items: center; }
+        .notif-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 50%; border: 2px solid white; }
+
+        .dashboard-container { padding: 40px; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-section h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin: 0; }
+        .header-section p { color: #64748b; margin: 5px 0 0 0; }
+
+        .filter-row { background: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; border: 1px solid #e2e8f0; }
+        .filter-input { padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; }
+        .filter-btn { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+
+        .box-placeholder { background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e2e8f0; }
+        .inventory-table { width: 100%; border-collapse: collapse; }
+        .inventory-table th { background: #f8fafc; padding: 15px 20px; color: #334155; font-size: 13px; font-weight: 700; text-align: left; border-bottom: 2px solid #e2e8f0;}
+        .inventory-table td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: #475569; font-size: 14px; }
+
+        .add-btn { background: var(--primary-yellow); color: #0f172a; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3); cursor: pointer; border: none; }
+        .add-btn:hover { background: #eab308; transform: translateY(-2px); }
+
+        .cat-img-preview { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid #e2e8f0; margin-right: 12px; vertical-align: middle; }
+        .cat-icon-placeholder { width: 40px; height: 40px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; vertical-align: middle; color: #94a3b8; }
+
+        .status-badge { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .badge-active { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .badge-featured { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; margin-left: 5px; }
+
+        /* MODAL STYLING */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; width: 500px; margin: 50px auto; border-radius: 15px; padding: 30px; position: relative; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: #64748b; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #1e293b; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        .checkbox-group { display: flex; gap: 20px; margin-top: 10px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
     </style>
 </head>
-<body class="bg-light min-vh-100 text-dark">
-    <!-- navigation sidebar -->
-    <nav id="sidebar" class="bg-white border-end d-flex flex-column position-fixed top-0 start-0 min-vh-100" style="z-index:1000;">
-        <!-- logo -->
-        <div class="border-bottom px-3 py-3 d-flex align-items-center gap-2 fw-bold fs-5">
-            <span style="font-size:1.4rem;"></span>Laces
-        </div>
+<body>
 
-        <!-- Navigation part -->
-        <ul class="nav flex-column mt-3">
-            <li class="nav-item">
-                <a href="dashboard.php" class="nav-link d-flex align-items-center gap-2 fw-semibold rounded text-secondary mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-grid-1x2"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="orders.php" class="nav-link d-flex align-items-center gap-2 fw-semibold text-secondary rounded mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-cart-fill"></i>
-                    Orders
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="product.php" class="nav-link d-flex align-items-center gap-2 fw-semibold rounded text-secondary mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-box-seam-fill"></i>
-                    Products
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="categories.php" class="nav-link active d-flex align-items-center gap-2 fw-semibold rounded mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-folder"></i>
-                    Categories
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href ="customer.php" class="nav-link d-flex align-items-center gap-2 fw-semibold rounded text-secondary mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-people"></i>
-                    Customers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="analytics.php" class="nav-link d-flex align-items-center gap-2 fw-semibold rounded text-secondary mx-2 my-1 px-3 py-2">
-                    <i class="bi bi-bar-chart"></i>
-                    Analytics
-                </a>
-            </li>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box">
+                <img src="../character.jpg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h3 style="font-size: 14px; margin-top: 15px; letter-spacing: 1px;">SPARKVERSE ADMIN</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.php"><i class="fa-solid fa-gauge"></i> &nbsp; Dashboard</a></li>
+            <li><a href="orders.php"><i class="fa-solid fa-cart-shopping"></i> &nbsp; Orders</a></li>
+            <li><a href="products.php"><i class="fa-solid fa-box"></i> &nbsp; Products</a></li>
+            <li class="active"><a href="categories.php"><i class="fa-solid fa-folder"></i> &nbsp; Categories</a></li>
+            <li><a href="customers.php"><i class="fa-solid fa-users"></i> &nbsp; Customers</a></li>
+            <li><a href="analytics.php"><i class="fa-solid fa-chart-line"></i> &nbsp; Analytics</a></li>
+            <li><a href="logout.php" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> &nbsp; Logout</a></li>
         </ul>
-        <!-- footer -->
-        <div class="mt-auto border-top px-3 py-3">
-            <div class="d-flex align-items-center gap-2">
-                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0" style="width: 36px; height: 36px; font-size:.8rem;"><?php echo $adminInitial; ?></div>
-                <div>
-                    <div class="fw-bold" style="font-size:.82rem;line-height:1.2;"><?php echo htmlspecialchars($adminUsername); ?></div>
-                    <div class="text-secondary" style="font-size:.72rem;">Admin</div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    </aside>
 
-    <!-- top part -->
-    <div id="topbar" class="bg-white border-bottom d-flex align-items-center px-4 sticky-top" style="height:60px;z-index:999;">
-        <h5 class="mb-0 fw-bold fs-5">Dashboard</h5>
-
-        <!-- search part -->
-        <div class="position-relative ms-3" style="max-width:260px;flex:1;">
-            <i class="bi bi-search text-secondary search-icon"></i>
-            <input type="text" class="form-control bg-light border search-input" placeholder="Search…"/>
-        </div>
-
-        <!-- right part -->
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <div class="position-relative">
-                <i class="bi bi-bell fs-5 text-secondary"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem;">3</span>
-            </div>
-            <div class="dropdown">
-                <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
-                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0" style="width:36px;height:36px;font-size:.8rem;"><?php echo $adminInitial; ?></div>
-                    <div>
-                        <div class="fw-bold" style="font-size:.82rem;line-height:1.1;"><?php echo htmlspecialchars($adminUsername); ?></div>
-                        <div class="text-secondary" style="font-size:.72rem;">Admin</div>
-                    </div>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'superadmin'): ?>
-                    <li><a class="dropdown-item" href="settings.php"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                    <li><hr class="dropdown-divider"></li>
+    <div class="main-content">
+        <header class="top-navbar">
+            <div style="display: flex; align-items: center; gap: 25px;">
+                <a href="notifications.php" class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <?php if($unread_count > 0): ?>
+                        <span class="notif-badge"><?php echo $unread_count; ?></span>
                     <?php endif; ?>
-                    <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="confirmLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                </ul>
+                </a>
+                <a href="profile.php">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary-yellow); overflow: hidden;">
+                        <img src="../character.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </a>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <!-- main part -->
-    <div id="main" class="p-4">
- 
-        <!-- header -->
-        <div class="d-flex align-items-start justify-content-between mb-4">
-            <div>
-                <h4 class="fw-bold mb-1">Categories</h4>
-                <p class="text-secondary mb-0 products-subtitle">Manage your product categories</p>
-            </div>
-            <button class="btn btn-dark d-flex align-items-center gap-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openAddCategoryModal()">
-                <i class="bi bi-plus-lg"></i> Add Category
-            </button>
-        </div>
-
-        <div id="categoryAlertContainer"></div>
- 
-        <?php if (!empty($message)): ?>
-        <div class="alert alert-<?php echo $messageType === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($message); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        <?php endif; ?>
- 
-        <!-- search -->
-        <div class="bg-white border rounded-3 p-3 mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <!-- Search -->
-                <div class="position-relative flex-fill">
-                    <i class="bi bi-search text-secondary search-icon"></i>
-                    <input type="text" id="categorySearch" class="form-control bg-light border search-input w-100"
-                           placeholder="Search categories…"/>
+        <main class="dashboard-container">
+            <div class="header-section">
+                <div>
+                    <h1>Category Management</h1>
+                    <p>Organize your merchandise by adding or editing product categories.</p>
                 </div>
+                <button onclick="openModal()" class="add-btn">
+                    <i class="fa-solid fa-plus"></i> &nbsp; ADD CATEGORY
+                </button>
             </div>
-        </div>
- 
-        <!-- List view -->
-        <div id="listView" class="bg-white border rounded-3 p-3">
-            <div class="table-responsive">
-                <table class="table products-table table-hover align-middle mb-0">
-                    <thead class="fw-bold border-bottom">
+
+            <form action="" method="GET" class="filter-row">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
+                    <input type="text" name="search" class="filter-input" style="width: 350px;" placeholder="Search category name..." value="<?php echo htmlspecialchars($search); ?>">
+                </div>
+                <button type="submit" class="filter-btn">Search</button>
+            </form>
+
+            <div class="box-placeholder">
+                <table class="inventory-table">
+                    <thead>
                         <tr>
-                            <th class="px-3 py-3">Category Name</th>
-                            <th class="px-3 py-3">Description</th>
-                            <th class="px-3 py-3">Products</th>
-                            <th class="px-3 py-3">Status</th>
-                            <th class="px-3 py-3">Actions</th>
+                            <th>Category Name</th>
+                            <th>Meta Description</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="categoriesTableBody">
-                        <?php if (empty($categories)): ?>
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <i class="bi bi-folder display-1 text-secondary mb-3 d-block"></i>
-                                <h5 class="text-secondary">No categories found</h5>
-                                <p class="text-muted">Add a new category to get started.</p>
-                            </td>
-                        </tr>
+                    <tbody>
+                        <?php if(mysqli_num_rows($result) > 0): ?>
+                            <?php while($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td style="font-weight: 600; color: #1e293b;">
+                                    <?php if(!empty($row['icon']) && file_exists("../uploads/".$row['icon'])): ?>
+                                        <img src="../uploads/<?php echo $row['icon']; ?>" class="cat-img-preview">
+                                    <?php else: ?>
+                                        <div class="cat-icon-placeholder">
+                                            <i class="fa-regular fa-folder-open"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php echo htmlspecialchars($row['name']); ?>
+                                </td>
+                                <td style="max-width: 300px; color: #64748b; font-size: 13px;">
+                                    <?php echo !empty($row['meta_description']) ? htmlspecialchars($row['meta_description']) : "<i style='color:#cbd5e1'>No description.</i>"; ?>
+                                </td>
+                                <td style="font-weight: 700; color: #334155;">
+                                    <?php echo $row['product_count']; ?> items
+                                </td>
+                                <td>
+                                    <?php if($row['is_active'] == 1): ?>
+                                        <span class="status-badge badge-active">Active</span>
+                                    <?php else: ?>
+                                        <span class="status-badge badge-inactive">Inactive</span>
+                                    <?php endif; ?>
+
+                                    <?php if($row['is_featured'] == 1): ?>
+                                        <span class="status-badge badge-featured"><i class="fa-solid fa-star"></i> Featured</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="edit_category.php?id=<?php echo $row['id']; ?>" style="color: #3b82f6; margin-right: 15px;"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a href="delete_category.php?id=<?php echo $row['id']; ?>" style="color: #ef4444;" onclick="return confirm('Delete category?')"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
                         <?php else: ?>
-                        <?php foreach ($categories as $category): ?>
-                        <?php $categoryImage = normalizeCategoryImagePath($category['latest_image'] ?? ''); ?>
-                        <tr class="border-bottom border-light-subtle" data-category-name="<?php echo htmlspecialchars($category['name']); ?>">
-                            <td class="px-3 py-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="products-img-placeholder rounded-2 bg-light flex-shrink-0 overflow-hidden d-flex align-items-center justify-content-center">
-                                        <?php if (!empty($categoryImage)): ?>
-                                        <img src="<?php echo htmlspecialchars($categoryImage); ?>" class="w-100 h-100 object-fit-cover" alt="<?php echo htmlspecialchars($category['name']); ?>" onerror="this.style.display='none'">
-                                        <?php endif; ?>
-                                    </div>
-                                    <span class="fw-semibold"><?php echo htmlspecialchars($category['name']); ?></span>
-                                </div>
-                            </td>
-                            <td class="px-3 py-3 text-secondary"><?php echo htmlspecialchars($category['description'] ?? ''); ?></td>
-                            <td class="px-3 py-3 fw-semibold"><?php echo htmlspecialchars($category['product_count']); ?></td>
-                            <td class="px-3 py-3">
-                                <span class="products-status-badge status-active">Active</span>
-                            </td>
-                            <td class="px-3 py-3">
-                                <a href="javascript:void(0)" class="products-edit-link me-2" onclick="editCategory(<?php echo $category['id']; ?>, '<?php echo htmlspecialchars(addslashes($category['name'])); ?>', '<?php echo htmlspecialchars(addslashes($category['description'] ?? '')); ?>')">Edit</a>
-                                <a href="javascript:void(0)" class="products-delete-link" onclick="deleteCategory(<?php echo $category['id']; ?>, '<?php echo htmlspecialchars(addslashes($category['name'])); ?>')">Delete</a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                            <tr><td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">No categories found.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
- 
-            <div id="categoriesEmptyState" class="text-center text-secondary py-5 d-none">
-                <i class="bi bi-folder orders-empty-icon d-block mb-2"></i>
-                No categories match your search.
-            </div>
-        </div>
- 
-        <!-- Grid view -->
-        <div id="gridView" class="d-none">
-            <div class="row g-3" id="categoriesGridBody">
-                <!-- Grid items would be here if view toggles were enabled -->
-            </div>
- 
-            <div id="gridEmptyState" class="text-center text-secondary py-5 d-none">
-                <i class="bi bi-folder orders-empty-icon d-block mb-2"></i>
-                No categories match your search.
-            </div>
-        </div>
- 
+        </main>
     </div>
 
-    <!-- Category Modal -->
-    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 style="margin-top: 0; color: #0f172a;">Add New Category</h2>
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. K-Pop Albums" required>
                 </div>
-                <form id="categoryForm" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" id="categoryId" name="category_id" value="">
-                        <input type="hidden" id="categoryAction" name="action" value="add_category">
-
-                        <div class="mb-3">
-                            <label for="categoryName" class="form-label">Category Name</label>
-                            <input type="text" class="form-control" id="categoryName" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoryDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="categoryDescription" name="description" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Category</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Category Modal -->
-    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-bottom bg-danger bg-opacity-10">
-                    <h5 class="modal-title fw-bold text-danger" id="deleteCategoryModalLabel">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Delete Category
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="form-group">
+                    <label>Meta Description</label>
+                    <textarea name="meta_description" class="form-control" rows="3" placeholder="Brief description for SEO..."></textarea>
                 </div>
-                <form id="deleteCategoryForm" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" id="deleteCategoryId" name="category_id" value="">
-                        <input type="hidden" name="action" value="delete_category">
-                        <p class="mb-2">Are you sure you want to delete the category "<strong id="deleteCategoryName"></strong>"?</p>
-                        <p class="text-secondary small mb-0">Deleting this category will not delete the products, but those products will lose the assigned category.</p>
+                <div class="form-group">
+                    <label>Category Icon/Image</label>
+                    <input type="file" name="icon" class="form-control">
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="is_active" id="active" checked>
+                        <label for="active" style="margin:0">Active Category</label>
                     </div>
-                    <div class="modal-footer border-top">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-2"></i>Delete Category
-                        </button>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="is_featured" id="featured">
+                        <label for="featured" style="margin:0">Featured Category</label>
                     </div>
-                </form>
-            </div>
+                </div>
+                <button type="submit" name="add_category" class="add-btn" style="width: 100%; margin-top: 25px;">
+                    SAVE CATEGORY
+                </button>
+            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function showCategoryAlert(message, isSuccess) {
-            const container = document.getElementById('categoryAlertContainer');
-            if (!container) {
-                alert(message);
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="alert alert-${isSuccess ? 'success' : 'danger'} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-        }
-
-        function postCategoryForm(formData) {
-            return fetch('categories.php', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                },
-                body: formData
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Request failed with status ' + response.status);
-                }
-                return response.json();
-            });
-        }
-
-        function openAddCategoryModal() {
-            document.getElementById('categoryModalLabel').textContent = 'Add Category';
-            document.getElementById('categoryAction').value = 'add_category';
-            document.getElementById('categoryId').value = '';
-            document.getElementById('categoryName').value = '';
-            document.getElementById('categoryDescription').value = '';
-        }
-
-        function editCategory(id, name, description) {
-            document.getElementById('categoryModalLabel').textContent = 'Edit Category';
-            document.getElementById('categoryAction').value = 'edit_category';
-            document.getElementById('categoryId').value = id;
-            document.getElementById('categoryName').value = name;
-            document.getElementById('categoryDescription').value = description;
-            const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
-            modal.show();
-        }
-
-        function deleteCategory(id, name) {
-            document.getElementById('deleteCategoryId').value = id;
-            document.getElementById('deleteCategoryName').textContent = name;
-            const modal = new bootstrap.Modal(document.getElementById('deleteCategoryModal'));
-            modal.show();
-        }
-
-        document.getElementById('categorySearch').addEventListener('input', function() {
-            const filter = this.value.toLowerCase();
-            document.querySelectorAll('#categoriesTableBody tr').forEach(function(row) {
-                const name = row.getAttribute('data-category-name') || '';
-                row.style.display = name.toLowerCase().includes(filter) ? '' : 'none';
-            });
-        });
-
-        document.getElementById('categoryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-
-            postCategoryForm(new FormData(this))
-                .then(data => {
-                    showCategoryAlert(data.message, data.success);
-                    if (data.success) {
-                        const modalEl = document.getElementById('categoryModal');
-                        const modal = bootstrap.Modal.getInstance(modalEl);
-                        if (modal) {
-                            modal.hide();
-                        }
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 350);
-                    }
-                })
-                .catch(error => {
-                    showCategoryAlert('Error saving category: ' + error.message, false);
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                });
-        });
-
-        document.getElementById('deleteCategoryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Deleting...';
-
-            postCategoryForm(new FormData(this))
-                .then(data => {
-                    showCategoryAlert(data.message, data.success);
-                    if (data.success) {
-                        const modalEl = document.getElementById('deleteCategoryModal');
-                        const modal = bootstrap.Modal.getInstance(modalEl);
-                        if (modal) {
-                            modal.hide();
-                        }
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 350);
-                    }
-                })
-                .catch(error => {
-                    showCategoryAlert('Error deleting category: ' + error.message, false);
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                });
-        });
-
-        function confirmLogout() {
-            const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
-            modal.show();
+        function openModal() { document.getElementById('addCategoryModal').style.display = 'block'; }
+        function closeModal() { document.getElementById('addCategoryModal').style.display = 'none'; }
+        window.onclick = function(event) {
+            let modal = document.getElementById('addCategoryModal');
+            if (event.target == modal) { modal.style.display = 'none'; }
         }
     </script>
 
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-bottom bg-danger bg-opacity-10">
-                    <h5 class="modal-title fw-bold text-danger" id="logoutModalLabel">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Confirm Logout
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-2">Are you sure you want to log out?</p>
-                    <p class="text-secondary small mb-0">You will be redirected to the login page. Any unsaved changes will be lost.</p>
-                </div>
-                <div class="modal-footer border-top">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../db/action/logout.php" class="btn btn-danger">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
