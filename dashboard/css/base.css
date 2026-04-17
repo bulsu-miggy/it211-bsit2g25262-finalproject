@@ -1,0 +1,66 @@
+/* --- FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap');
+
+/* --- GLOBAL VARIABLES --- */
+:root{
+  /* ── Pastel Brown Palette ── */
+  --cream:      #fdf8f3;
+  --warm-white: #fffbf7;
+  --latte:      #c9a87c;
+  --caramel:    #b8895a;
+  --mocha:      #7d5a3c;
+  --espresso:   #4a2f1a;
+  --blush:      #e8d5c4;
+  --dusty-rose: #d4a99a;
+  --sage:       #b5c4b1;
+  --taupe:      #c4b09a;
+  --sand:       #e8ddd0;
+  --bark:       #6b4226;
+  --amber:      #d4874e;
+
+  /* ── UI Tokens ── */
+  --primary:    var(--caramel);
+  --primary-dk: var(--mocha);
+  --primary-lt: #f5ede3;
+  --success:    #8fad88;
+  --warning:    #d9a84e;
+  --danger:     #c97070;
+  --info:       #89a8b8;
+  --bg:         var(--cream);
+  --sidebar:    var(--espresso);
+  --sidebar-h:  var(--bark);
+  --card:       var(--warm-white);
+  --border:     #e8ddd0;
+  --text:       #3a2415;
+  --muted:      #9a7d68;
+  --radius:     14px;
+  --shadow:     0 2px 8px rgba(122,80,40,.08);
+  --shadow-md:  0 6px 20px rgba(122,80,40,.12);
+}
+
+/* --- GLOBAL RESET --- */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow:hidden;}
+
+img, picture, svg, video {
+    max-width: 100%;
+    display: block;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

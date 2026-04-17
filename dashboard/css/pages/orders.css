@@ -1,0 +1,14 @@
+/* --- ORDERS PAGE --- */
+
+/* Orders page specific styles can go here */
+
+#page-orders th, #page-orders td { text-align: left; }
+
+/* Column Widths */
+#page-orders th:nth-child(1), #page-orders td:nth-child(1) { width: 140px; } /* Order # */
+#page-orders th:nth-child(2), #page-orders td:nth-child(2) { width: auto; } /* Customer */
+#page-orders th:nth-child(3), #page-orders td:nth-child(3) { width: 100px; text-align: center; } /* Items */
+#page-orders th:nth-child(4), #page-orders td:nth-child(4) { width: 120px; text-align: right; } /* Total */
+#page-orders th:nth-child(5), #page-orders td:nth-child(5) { width: 140px; } /* Date */
+#page-orders th:nth-child(6), #page-orders td:nth-child(6) { width: 120px; text-align: center; } /* Status */
+#page-orders th:nth-child(7), #page-orders td:nth-child(7) { width: 100px; text-align: right; } /* Actions */

@@ -1,0 +1,46 @@
+/* --- AUTH TABS --- */
+.tab-group {
+  display: flex;
+  background: var(--cream);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  font-size: .9rem;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+.input-icon-wrap i {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+@media (max-width: 480px) {
+  .tab-group {
+    flex-direction: column;
+  }
+}
+

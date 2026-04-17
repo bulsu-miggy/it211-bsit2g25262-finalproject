@@ -1,0 +1,81 @@
+﻿/* --- OUR STORY PAGE --- */
+/* Brand story page styles for the narrative, imagery, and team section. */
+.story-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
+}
+.story-header {
+    font-family: var(--header-font);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #888;
+    margin-bottom: 20px;
+    display: block;
+}
+.story-title {
+    font-family: var(--header-font);
+    font-size: 52px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    line-height: 1.1;
+}
+.philosophy-section {
+    margin-top: 60px;
+    padding: 40px;
+    border-top: 1px solid var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+}
+.philosophy-text {
+    font-size: 18px;
+    font-style: italic;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto;
+    font-family: var(--header-font);
+}
+.content-block {
+    margin: 50px 0;
+    text-align: justify;
+}
+.content-block p {
+    margin-bottom: 25px;
+    font-weight: 300;
+    color: #444;
+}
+.story-image {
+    width: 100%;
+    height: auto;
+    background-color: #f4f1ea;
+    margin: 40px 0;
+    object-fit: contain;
+    border-radius: 2px;
+}
+.btn-shop {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 15px 40px;
+    background-color: var(--text-color);
+    color: #FFF;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+.btn-shop:hover {
+    opacity: 0.8;
+}
+.team-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+.team-list strong {
+    font-weight: 600;
+}

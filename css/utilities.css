@@ -1,0 +1,137 @@
+﻿/* --- UTILITIES --- */
+.text-center {
+    text-align: center;
+}
+.text-right {
+    text-align: right;
+}
+.text-left {
+    text-align: left;
+}
+.text-muted {
+    color: #888;
+}
+.text-small {
+    font-size: 0.9rem;
+}
+.text-uppercase-sm {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #888;
+}
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+.mt-5 {
+    margin-top: 5px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mt-15 {
+    margin-top: 15px;
+}
+.mt-20 {
+    margin-top: 20px;
+}
+.mb-5 {
+    margin-bottom: 5px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.mb-15 {
+    margin-bottom: 15px;
+}
+.mb-20 {
+    margin-bottom: 20px;
+}
+.px-10 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.py-10 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.w-100 {
+    width: 100%;
+}
+.hidden {
+    display: none !important;
+}
+.hidden-radio {
+    display: none;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
+    padding: 0 20px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: opacity 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.btn-primary {
+    background-color: var(--text-color);
+    color: #fff;
+}
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+}
+.btn-tertiary {
+    background-color: transparent;
+    color: #888;
+}
+.btn-small {
+    padding: 0 12px;
+    min-height: 35px;
+    font-size: 0.75rem;
+}
+.btn-block {
+    width: 100%;
+}
+.label-uppercase {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888;
+}
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    color: #888;
+}
+.input-fullwidth {
+    width: 100%;
+}

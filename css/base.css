@@ -1,0 +1,49 @@
+﻿/* --- FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;600&family=Montserrat:wght@300;400;500&display=swap');
+
+/* --- GLOBAL VARIABLES --- */
+:root {
+    --bg-color: #FFFDF8;
+    --text-color: #2A2A2A;
+    --accent-color: #E0D0B6;
+    --border-color: #F0F0F0;
+    --header-font: 'Cormorant Garamond', serif;
+    --ui-font: 'Montserrat', sans-serif;
+}
+
+/* --- GLOBAL RESET --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--ui-font);
+    line-height: 1.6;
+}
+
+img, picture, svg, video {
+    max-width: 100%;
+    display: block;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

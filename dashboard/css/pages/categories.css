@@ -1,0 +1,13 @@
+/* --- CATEGORIES PAGE --- */
+
+/* Categories page specific styles can go here */
+
+#page-categories th, #page-categories td { text-align: left; }
+
+/* Column Widths */
+#page-categories th:nth-child(1), #page-categories td:nth-child(1) { width: 80px; } /* ID */
+#page-categories th:nth-child(2), #page-categories td:nth-child(2) { width: auto; } /* Name */
+#page-categories th:nth-child(3), #page-categories td:nth-child(3) { width: 20%; } /* Slug */
+#page-categories th:nth-child(4), #page-categories td:nth-child(4) { width: 15%; text-align: center; } /* Items */
+#page-categories th:nth-child(5), #page-categories td:nth-child(5) { width: 18%; } /* Created */
+#page-categories th:nth-child(6), #page-categories td:nth-child(6) { width: 100px; text-align: right; } /* Actions */

@@ -1,0 +1,13 @@
+/* --- CUSTOMERS PAGE --- */
+
+/* Customers page specific styles can go here */
+
+#page-customers th, #page-customers td { text-align: left; }
+
+/* Column Widths */
+#page-customers th:nth-child(1), #page-customers td:nth-child(1) { width: auto; } /* Name */
+#page-customers th:nth-child(2), #page-customers td:nth-child(2) { width: 22%; } /* Email */
+#page-customers th:nth-child(3), #page-customers td:nth-child(3) { width: 10%; text-align: center; } /* Orders */
+#page-customers th:nth-child(4), #page-customers td:nth-child(4) { width: 15%; text-align: right; } /* Spent */
+#page-customers th:nth-child(5), #page-customers td:nth-child(5) { width: 15%; } /* Joined */
+#page-customers th:nth-child(6), #page-customers td:nth-child(6) { width: 80px; text-align: right; } /* Actions */

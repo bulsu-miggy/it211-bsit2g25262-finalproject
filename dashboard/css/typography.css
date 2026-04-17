@@ -1,0 +1,25 @@
+/* --- TYPOGRAPHY --- */
+
+/* Base text styles */
+body, button, input, select, textarea {
+    font-family: 'Jost', sans-serif;
+}
+
+/* Display font */
+.display{font-family:'Cormorant Garamond',serif;}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', serif;
+    line-height: 1.2;
+    margin: 0;
+}
+
+/* Paragraphs and emphasis */
+p {
+    margin: 0;
+}
+
+strong {
+    font-weight: 600;
+}

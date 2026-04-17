@@ -1,0 +1,228 @@
+﻿/* --- AUTH PAGES --- */
+/* Auth page layout and login/reset form styling. */
+
+/* Auth page wrapper */
+.auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    min-height: calc(100vh - 200px);
+    padding-top: 50px;
+}
+.hero-side,
+.form-side {
+    flex: 1;
+}
+.hero-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+}
+.hero-text h1 {
+    font-family: var(--header-font);
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+.hero-img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+}
+
+.card {
+    width: 100%;
+    max-width: 560px;
+    border: 1.5px solid var(--accent-color);
+    padding: 50px 40px;
+    text-align: center;
+    background: #fff;
+    margin-left: auto;
+}
+.card h2 {
+    font-family: var(--header-font);
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Form headings and labels */
+.section-subtitle {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 25px;
+}
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--accent-color);
+    background: transparent;
+    font-family: var(--ui-font);
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Form field guidance */
+.password-guidance {
+    margin-bottom: 26px;
+    color: #5f5f5f;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: left;
+}
+.btn-main {
+    width: 100%;
+    padding: 16px;
+    background: var(--text-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    transition: opacity 0.3s ease;
+}
+.btn-main:hover {
+    opacity: 0.9;
+}
+.form-footer {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #666;
+}
+.form-footer a {
+    color: var(--text-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--text-color);
+    font-weight: 600;
+}
+
+/* Modal layout */
+.modal-page-wrapper {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 10;
+}
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+}
+.modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 42px 38px;
+    box-shadow: 0 40px 80px rgba(12, 15, 21, 0.15);
+    z-index: 1;
+    text-align: left;
+}
+.modal-card h2 {
+    font-family: var(--header-font);
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+}
+.modal-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.7;
+}
+.modal-close {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.06);
+    color: #222;
+    font-size: 1.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive auth layout */
+@media (max-width: 920px) {
+    .auth-container {
+        flex-direction: column;
+        min-height: auto;
+        padding-top: 30px;
+        gap: 40px;
+    }
+
+    .hero-side,
+    .form-side {
+        width: 100%;
+    }
+
+    .hero-text h1 {
+        font-size: 2.6rem;
+    }
+
+    .card {
+        margin-left: 0;
+        padding: 35px 30px;
+    }
+
+    .hero-img {
+        height: auto;
+        max-height: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .card {
+        padding: 28px 20px;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+
+    .input-group input {
+        padding: 12px;
+    }
+
+    .btn-main {
+        padding: 14px;
+    }
+}
+
+.auth-container.auth-center {
+    justify-content: center;
+    padding-top: 80px;
+    min-height: calc(100vh - 140px);
+}
+
+.auth-container.auth-center .card {
+    margin: 0 auto;
+}

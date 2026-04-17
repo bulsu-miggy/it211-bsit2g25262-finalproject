@@ -1,0 +1,15 @@
+/* --- PRODUCTS PAGE --- */
+
+/* Products page specific styles can go here */
+
+#page-products th, #page-products td { text-align: left; }
+
+/* Column Widths */
+#page-products th:nth-child(1), #page-products td:nth-child(1) { width: 60px; text-align: center; } /* Thumb */
+#page-products th:nth-child(2), #page-products td:nth-child(2) { width: auto; } /* Title/ID */
+#page-products th:nth-child(3), #page-products td:nth-child(3) { width: 20%; } /* Scents */
+#page-products th:nth-child(4), #page-products td:nth-child(4) { width: 12%; } /* Category */
+#page-products th:nth-child(5), #page-products td:nth-child(5) { width: 10%; text-align: right; } /* Price */
+#page-products th:nth-child(6), #page-products td:nth-child(6) { width: 10%; text-align: center; } /* Stock */
+#page-products th:nth-child(7), #page-products td:nth-child(7) { width: 12%; text-align: center; } /* Status */
+#page-products th:nth-child(8), #page-products td:nth-child(8) { width: 100px; text-align: right; } /* Actions */

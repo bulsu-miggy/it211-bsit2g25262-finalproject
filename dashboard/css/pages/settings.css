@@ -1,0 +1,9 @@
+/* --- SETTINGS PAGE --- */
+
+.settings-grid{display:block;padding:0 20px;}
+.settings-nav{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:12px;height:fit-content;}
+.settings-nav-item{padding:11px 14px;border-radius:10px;cursor:pointer;font-size:.875rem;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:10px;transition:all .2s;}
+.settings-nav-item:hover,.settings-nav-item.active{background:var(--primary-lt);color:var(--caramel);}
+.settings-panel{display:none;}
+.settings-panel.active{display:block;}
+.section-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:26px;}
