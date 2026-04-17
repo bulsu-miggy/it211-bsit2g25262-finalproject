@@ -1,0 +1,98 @@
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+}
+
+
+body {
+    background: url('../images/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.bg-image {
+    background: url('../images/bg.jpg') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#login-box, .register-container {
+    background-color: rgba(30, 30, 30, 0.9);
+    opacity: 70px;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+    color: white;
+}
+
+
+.brand-name {
+    font-family: 'Times New Roman', serif;
+    font-size: 100px;
+    color: #ffffff;
+}
+
+h1, h2 {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: bold;
+    color: #fff;
+}
+
+
+label {
+    color: #ccc;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.form-control, input[type="text"], input[type="password"], input[type="email"] {
+    border-radius: 10px;
+    border: none;
+    background-color: #e0e0e0;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+}
+
+
+.custom-btn {
+    background-color: rgba(241, 237, 237, 0.5);
+    border: none ;
+    color: #111111 ;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.3s;
+    font-size: 25px;
+}
+
+.custom-btn:hover {
+    background-color: rgba(255, 255, 255, 0.8) ;
+}
+
+.signup-btn, .btn-dark {
+    border-radius: 20px;
+    padding: 12px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+
+a {
+  display: block;        
+  margin: 0 auto;        
+  text-align: center;    
+  width: fit-content;  
+  color: #ffffff;
+  text-decoration: underline;  
+}
+/* Responsive */
+/* @media (max-width: 768px) {
+    .brand-name { font-size: 3rem; }
+    body { border-width: 5px; }
+} */

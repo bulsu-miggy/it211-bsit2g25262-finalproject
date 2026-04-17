@@ -1,0 +1,69 @@
+      .parallax-1 {
+  background-image: url("../images/home/17home.png");
+  height: 500px; /* mas ok kaysa 100% */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+      .parallax-2 {
+  background-image: url("../images/home/zb1home.png");
+  height: 500px; /* mas ok kaysa 100% */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+      .parallax-3 {
+  background-image: url("../images/home/btshome.jpg");
+  height: 500px; /* mas ok kaysa 100% */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+      .parallax-4 {
+  background-image: url("../images/home/lighthome.jpg");
+  height: 500px; /* mas ok kaysa 100% */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+      .header-section {
+          background-color: #13195b;
+          color: white;
+          padding: 22px 0;
+      }
+      .header-brand {
+          letter-spacing: 2px;
+          font-size: 1.6rem;
+      }
+      .header-icons a {
+          color: white;
+          font-size: 1.4rem;
+          text-decoration: none;
+          margin-left: 18px;
+          opacity: 0.9;
+      }
+      .page-nav {
+          background-color: #f8f9fa;
+          padding: 14px 0;
+      }
+      .page-nav .nav-link {
+          color: #5f6368 !important;
+          font-weight: 600;
+          text-transform: uppercase;
+          font-size: 0.95rem;
+          letter-spacing: 0.5px;
+      }
+      .page-nav .nav-link.active {
+          color: #13195b !important;
+      }
+      .page-nav .nav-separator {
+          color: #ced4da;
+      }

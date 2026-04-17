@@ -1,0 +1,48 @@
+/* Initial state: Nakatago at medyo mababa */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-out;
+}
+
+/* Active state: Kapag na-scroll na */
+.reveal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Card and Image Styling */
+.product-card {
+    background-color: #d1d9e6;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.img-wrapper {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-wrapper img {
+    max-height: 230px;
+    object-fit: contain;
+}
+
+/* Hide number input arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield !important;
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+}
