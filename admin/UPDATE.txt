@@ -1,0 +1,39 @@
+UPDATE ON USER SIDE:
+
+- changed the tables; instead of category varchar now it is category id which reference the new table created categories
+- few changes in product-list and index.php changing the category to category_id
+- also added helper function to look up category_id from the category name
+- also changed the dbconfig to match the tables that has been changed in connection.php
+- sa dbconfig nilagay ko na rin yung bagong table which is yung categories
+and also naglagay ng product images; yung product image nagawa para maccess ng admin yung images (if may mas better na function pabago nalangs)
+
+updated insert for product table:
+
+-- Insert products with subqueries for category IDs
+INSERT INTO `products`(`name`, `category_id`, `color`, `size`, `price`, `image`, `sales`, `stock`, `description`, `created_at`) 
+VALUES ('Nike Vaporfly Next', (SELECT id FROM categories WHERE name = 'Running Shoes'), 'Neon Green/Black', '10', 275.00, 'Nike Vaporfly.png', 234, 15, 'High-performance running shoe with carbon plate', NOW());
+
+INSERT INTO `products`(`name`, `category_id`, `color`, `size`, `price`, `image`, `sales`, `stock`, `description`, `created_at`) 
+VALUES ('Air Jordan 1 Retro', (SELECT id FROM categories WHERE name = 'Court Shoes'), 'Red/Black/Gold', '11', 199.99, 'Air Jordan 1 Retro.png', 432, 22, 'Classic basketball court shoe', NOW());
+
+INSERT INTO `products`(`name`, `category_id`, `color`, `size`, `price`, `image`, `sales`, `stock`, `description`, `created_at`) 
+VALUES ('Adidas Predator', (SELECT id FROM categories WHERE name = 'Field Shoes'), 'Black/White', '9', 149.99, 'adidas predator.png', 187, 18, 'Professional soccer field shoe', NOW());
+
+INSERT INTO `products`(`name`, `category_id`, `color`, `size`, `price`, `image`, `sales`, `stock`, `description`, `created_at`) 
+VALUES ('Vans Old Skool', (SELECT id FROM categories WHERE name = 'Sneakers'), 'Navy/White', '10', 65.00, 'vans.png', 892, 50, 'Classic skate shoe sneaker', NOW());
+
+UPDATE ON ADMIN:
+
+- so far sa admin yung mga changes lang is nangyari sa mismong file, adding functionality and connecting to database
+- nilagay ko yung files ng dbconfig.php tapos index dito pa replace nalang sa main (nag error kasi nung tinry ko magmerge)
+
+4/17/26
+- may new role na superadmin
+- user: superadmin pass: SuperPassword123
+- purpose ng super admin is maaacces deletion insertion ng admin at pag normal lang na admin di maaccess to
+- naglagay ng am charts 
+- changeable status sa order
+- deletion of customer
+- added top category
+- refinement nalng siguro needed sa code or may iayos na new funcitonality or idadgdag
+- may mga naayos lang na .php tulad ng dbconfig, product list at index nung nilipat ko kasi sa main bigla di nakikita yung images

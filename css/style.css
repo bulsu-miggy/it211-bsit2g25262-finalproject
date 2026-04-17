@@ -1,0 +1,211 @@
+/* ============================================
+    LACES STYLESHEET
+    File: style.css
+    ============================================ */
+
+/* --- Global & Variables --- */
+:root {
+    --laces-yellow: #ffc107;
+    --laces-yellow-hover: #e0a800;
+    --scroll-speed: 20s;
+    --bg-light: #f8f9fa;
+    --text-dark: #1a1a1a;
+    --text-muted: #6c757d;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    /* Change 'hidden' to 'auto' or 'visible' to allow scrolling */
+    overflow-x: hidden; /* Prevents side-scrolling from the animation */
+    overflow-y: auto;   /* Allows vertical scrolling for long content */
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- Left Side: Scrolling Branding --- */
+.scrolling-container {
+    /* ... other properties ... */
+    
+    /* REMOVE 'assets/' because the CSS file is ALREADY in that folder */
+    background-image: url('Scroll.png'); 
+    
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+    animation: scrollHorizontal var(--scroll-speed) linear infinite;
+    opacity: 0.9;
+}
+
+@keyframes scrollHorizontal {
+    from { background-position: 0 0; }
+    to { background-position: -2000px 0; } 
+}
+
+.display-brand {
+    font-size: 8rem;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: -6px;
+    line-height: 1;
+    z-index: 10;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+}
+
+/* --- Right Side: Form Column --- */
+.form-column {
+    background-color: #ffffff;
+    z-index: 20;
+    padding: 0 8%;
+    box-shadow: -15px 0 50px rgba(0, 0, 0, 0.2); 
+    border-left: 1px solid rgba(0,0,0,0.05);
+}
+
+.form-title {
+    font-weight: 900;
+    font-size: 3rem;
+    letter-spacing: -1.5px;
+    color: var(--text-dark);
+}
+
+.form-subtitle {
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* --- Inputs & Buttons --- */
+.small-label {
+    font-weight: 700;
+    color: #495057;
+    margin-left: 2px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    border-radius: 12px !important;
+    padding: 14px 20px;
+    background-color: #fcfcfc;
+    border: 2px solid #f1f3f5; 
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.form-control:hover {
+    border-color: #dee2e6;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: var(--laces-yellow);
+    background-color: #fff;
+    box-shadow: 0 10px 20px rgba(255, 193, 7, 0.12);
+    transform: translateY(-2px);
+}
+
+.btn-aces {
+    background-color: var(--laces-yellow);
+    border: none;
+    border-radius: 12px !important;
+    padding: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dark);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+}
+
+.btn-aces:hover {
+    background-color: var(--laces-yellow-hover);
+    transform: scale(1.02);
+    box-shadow: 0 12px 25px rgba(255, 193, 7, 0.4);
+}
+
+footer {
+    background-color: #f1f1f1 !important; /* Matches the subtle grey in your screenshot */
+}
+
+footer h6 {
+    font-size: 0.85rem;
+    text-transform: none; /* Keeps it modern and soft */
+}
+
+footer ul li a {
+    transition: color 0.2s ease;
+}
+
+footer ul li a:hover {
+    color: #000 !important; /* Darker text on hover for feedback */
+}
+
+/* Ensure social icons react to hover too */
+footer .bi:hover {
+    color: var(--laces-yellow);
+    cursor: pointer;
+}
+
+/* Removes the grey background specifically for footers inside forms */
+form footer {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin-top: 1rem;
+}
+
+.nav-icon {
+    height: 24px; /* Adjust this to match your design feel */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-icon:hover {
+    transform: scale(1.1); /* Adds a little "pop" when hovered */
+    opacity: 0.7;
+}
+
+/* --- Profile Specifics --- */
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.username-edit-input {
+    transition: all 0.3s ease;
+    min-width: 250px;
+}
+
+.username-edit-input:focus {
+    background-color: #fff !important;
+    border-bottom-color: var(--laces-yellow) !important;
+    color: #000;
+}
+
+/* Custom shadow for the Payment Method card */
+.details-panel {
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+}
+
+/* Fix for the off-center search icon on Profile screens */
+.profile-search-wrap .bi-search {
+    right: 15px !important; /* Forces alignment to the right edge */
+    left: auto !important;  /* Prevents left-side inheritance */
+    pointer-events: none;    /* Ensures clicking the icon still focuses the input */
+}
+
+.profile-search-wrap input {
+    padding-right: 45px !important; /* Prevents text from overlapping the icon */
+}
+
+/* Keep navbar search bars pill-shaped on pages that include this stylesheet. */
+.search-pill {
+    border-radius: 999px !important;
+}

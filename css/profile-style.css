@@ -1,0 +1,282 @@
+/* ============================================
+  LACES STYLESHEET
+  File: profile-style.css
+  ============================================ */
+
+
+
+/* ----- Google Fonts  ----- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Montserrat:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&display=swap');
+
+/* ----- Global reset & base ----- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  color: #1e2a3e;
+  overflow-x: hidden;
+}
+
+/* ----- Bootstrap overrides (match master.css) ----- */
+.border-dark {
+  border-color: #000 !important;
+}
+.bg-dark {
+  background-color: #1a1a1a !important;
+}
+.text-warning {
+  color: #f4d35e !important;
+}
+.btn-warning {
+  background-color: #f4d35e !important;
+  border: none;
+}
+.btn-warning:hover {
+  background-color: #eaa61e !important;
+}
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(244, 211, 94, 0.25);
+  border-color: #f4d35e;
+}
+.rounded-pill {
+  border-radius: 50px !important;
+}
+.shadow-custom {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ----- Typography weights  ----- */
+.fw-800 {
+  font-weight: 800;
+}
+.fw-900 {
+  font-weight: 900;
+}
+.small-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+/* ----- White container (like cart/order tracking) ----- */
+.white-container {
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  margin-bottom: 40px;
+}
+@media (max-width: 768px) {
+  .white-container {
+    padding: 24px;
+  }
+}
+
+/* ----- Navbar ----- */
+.navbar {
+  background: white !important;
+  border-bottom: 1px solid #dee2e6;
+}
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+.navbar-brand img {
+  width: 35px;
+  filter: grayscale(1);
+}
+.search-form {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.search-form .form-control {
+  border-radius: 50px;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.icon-btn img {
+  width: 22px;
+  transition: transform 0.2s;
+}
+.icon-btn:hover img {
+  transform: scale(1.05);
+}
+
+/* ----- Menu row hover ----- */
+.custom-hover {
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+.custom-hover:hover {
+  color: #f4d35e !important;
+  transform: scale(1.05);
+}
+
+/* ----- Profile specific: avatar upload button hover ----- */
+label[for="avatar-upload"] {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+label[for="avatar-upload"]:hover {
+  border-color: #f4d35e !important;
+  background-color: rgba(244, 211, 94, 0.1) !important;
+  transform: scale(1.02);
+}
+
+
+.bi-pencil-fill,
+.edit-icon {
+  transition: transform 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+.bi-pencil-fill:hover,
+.edit-icon:hover {
+  transform: scale(1.1);
+  color: #f4d35e !important;
+}
+
+/* ----- Form inputs ----- */
+.form-control {
+  border-radius: 50px;
+  border: 1px solid #dee2e6;
+  transition: all 0.2s;
+}
+.form-control:focus {
+  border-color: #f4d35e;
+  box-shadow: 0 0 0 0.2rem rgba(244, 211, 94, 0.25);
+}
+textarea.form-control {
+  border-radius: 20px;
+}
+.bg-light.border-0 {
+  background-color: #f8f9fa !important;
+  border: none !important;
+}
+
+html[data-theme='dark'] .profile-edit-form .form-control,
+html[data-theme='dark'] .profile-edit-form textarea.form-control,
+html[data-theme='dark'] .profile-edit-form .bg-light.border-0 {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+  border: 1px solid #4b5f82 !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.35);
+}
+
+html[data-theme='dark'] .profile-edit-form .form-control::placeholder,
+html[data-theme='dark'] .profile-edit-form textarea.form-control::placeholder {
+  color: #b8c3d6 !important;
+  opacity: 1;
+}
+
+html[data-theme='dark'] .profile-edit-form .small-label {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme='dark'] .profile-edit-form .form-control:focus,
+html[data-theme='dark'] .profile-edit-form textarea.form-control:focus {
+  border-color: #f4d35e !important;
+  box-shadow: 0 0 0 0.2rem rgba(244, 211, 94, 0.28) !important;
+}
+
+html[data-theme='dark'] .profile-edit-form input:-webkit-autofill,
+html[data-theme='dark'] .profile-edit-form input:-webkit-autofill:hover,
+html[data-theme='dark'] .profile-edit-form input:-webkit-autofill:focus,
+html[data-theme='dark'] .profile-edit-form textarea:-webkit-autofill,
+html[data-theme='dark'] .profile-edit-form textarea:-webkit-autofill:hover,
+html[data-theme='dark'] .profile-edit-form textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f8fafc !important;
+  -webkit-box-shadow: 0 0 0 1000px #172033 inset !important;
+  caret-color: #f8fafc !important;
+}
+
+/* ----- Buttons – same as product cards & cart ----- */
+.btn-outline-danger {
+  transition: all 0.2s ease;
+  border-radius: 50px;
+}
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+.btn-warning {
+  border-radius: 50px;
+  transition: all 0.2s ease;
+}
+.btn-warning:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 211, 94, 0.3);
+}
+
+/* ----- Footer  ----- */
+footer.bg-dark {
+  background: #1a1a1a !important;
+}
+footer ul {
+  list-style: none;
+  padding-left: 0;
+}
+footer ul li {
+  margin-bottom: 8px;
+}
+footer a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.2s;
+  font-size: 0.85rem;
+}
+footer a:hover {
+  color: #f4d35e !important;
+}
+.bg-dark .input-group .form-control {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #4b5563 !important;
+}
+.bg-dark .input-group .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.52) !important;
+  opacity: 1;
+}
+.bg-dark .input-group .btn-warning {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.footer-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #888;
+  text-align: center;
+}
+.text-white-50 {
+  color: rgba(255,255,255,0.5) !important;
+}
+
+/* ----- Responsive adjustments ----- */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .white-container {
+    padding: 1.5rem;
+  }
+  .row.g-5 {
+    --bs-gutter-y: 1.5rem;
+  }
+}
