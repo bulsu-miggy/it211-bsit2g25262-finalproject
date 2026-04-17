@@ -1,1 +1,8 @@
-# WST
+Group 2
+
+Leader: Tigas, Andrew L.
+
+Members: Garcia, Jewina Lei R.
+         Sumaway, Ryeona Erica M.
+         Trilles, Angelica R.
+         Valencia, Jaira S.
