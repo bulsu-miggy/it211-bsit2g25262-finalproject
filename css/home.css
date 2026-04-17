@@ -1,0 +1,221 @@
+.home.container {
+  padding: 6rem 2rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.home .product-grid.category-grid {
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .home .product-grid.category-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.category-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.cat-card-v2 {
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+.img-box {
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.cat-card-v2:hover img {
+  transform: scale(1.03);
+}
+
+.cat-card-v2 h3 {
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 1.5rem;
+  margin-top: 15px;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .category-selection-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .category-selection-grid { grid-template-columns: 1fr; }
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 2.5rem 1.75rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  transition: all 0.4s ease;
+  min-height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.category-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+}
+
+.category-card img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.category-card .btn-view {
+  margin-top: auto;
+}
+
+.category-title {
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: black;
+}
+
+.product-card.category-card {
+  color: black;
+}
+
+.product-card.category-card .category-title {
+  color: black !important;
+}
+
+.btn-view {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: black;
+  color: white !important;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-family: 'Rubik', sans-serif;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.btn-view:hover {
+  background: #222;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.btn-cart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: transparent;
+  color: black;
+  border: 2px solid black;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: 'Rubik', sans-serif;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.btn-cart:hover {
+  background: black;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.product-buttons {
+  display: flex !important;
+  gap: 12px !important;
+  margin-top: 12px;
+  justify-content: space-between !important;
+  width: 100%;
+}
+
+.product-card {
+  display: block;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.product-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 1.5rem;
+}
+
+.product-info h3 {
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 1.3rem;
+  margin: 0 0 8px 0;
+  letter-spacing: 1px;
+}
+
+.product-info p {
+  font-weight: bold;
+  color: black;
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+}
