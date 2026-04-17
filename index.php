@@ -1,358 +1,318 @@
 <?php
-  require 'config.php';
-  require 'db/action/dbconfig.php';
-
-  session_start();
-
-  if (!isset($_SESSION["username"]) || !isset($_SESSION["password"]))
-  {
-    echo "hello";
-    session_destroy();
-    header('Location: loginpage.php');
-    exit();
-  } 
-
-  $username = $_SESSION["username"];
-  $stmt = $conn->prepare("SELECT * FROM login WHERE username = :username");
-  $stmt->execute([':username' => $username]);
-  $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  $userid = $user_data["id"];
-  $image = !empty($user_data["avatar"]) ? $user_data["avatar"] : "$url/images/avatar.png";
-
-    function escape_html($value)
-    {
-        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-    }
-
-    function resolve_product_image_path_home($rawImage)
-    {
-        $value = trim((string) $rawImage);
-        if ($value === '') {
-            return 'assets2/adidasblablabla.png';
-        }
-
-        $value = str_replace('\\', '/', $value);
-        if (preg_match('#^(https?:)?//#i', $value) || strpos($value, 'data:') === 0) {
-            return $value;
-        }
-
-        if (strpos($value, 'assets2/') === 0 || strpos($value, 'images/') === 0) {
-            return $value;
-        }
-
-        return 'images/products/' . basename($value);
-    }
-
-    function get_display_products(PDO $conn, array $fallbackProducts, int $limit)
-    {
-        try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.color, p.size, p.price, p.image, p.sales
-                FROM products p
-                ORDER BY p.sales DESC, p.id DESC
-                LIMIT :limit");
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->execute();
-            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            $products = [];
-        }
-
-        if (empty($products)) {
-            return array_slice($fallbackProducts, 0, $limit);
-        }
-
-        return $products;
-    }
-
-    function product_detail_link(array $product)
-    {
-        return !empty($product['id']) ? 'product detail.php?id=' . urlencode((string) $product['id']) : 'product detail.php';
-    }
-
-    $placeholderTrendingProducts = [
-        [
-            'name' => 'Nike Air Max',
-            'category' => 'Trending',
-            'color' => 'Black/White',
-            'size' => '10',
-            'price' => 120.00,
-            'image' => 'assets2/adidasblablabla.png',
-            'sales' => 1240,
-        ],
-        [
-            'name' => 'Adidas Ultraboost',
-            'category' => 'Trending',
-            'color' => 'White/Gray',
-            'size' => '9',
-            'price' => 150.00,
-            'image' => 'assets2/adidasblablabla.png',
-            'sales' => 1180,
-        ],
-        [
-            'name' => 'Puma Suede',
-            'category' => 'Trending',
-            'color' => 'Blue/Red',
-            'size' => '11',
-            'price' => 85.00,
-            'image' => 'assets2/adidasblablabla.png',
-            'sales' => 980,
-        ],
-        [
-            'name' => 'New Balance 990',
-            'category' => 'Trending',
-            'color' => 'Grey/Navy',
-            'size' => '10',
-            'price' => 175.00,
-            'image' => 'assets2/adidasblablabla.png',
-            'sales' => 930,
-        ],
-    ];
-
-    $trendingProducts = get_display_products($conn, $placeholderTrendingProducts, 4);
-
-
-  try{    
-    
-    require 'db/action/dbconfig.php';
-
-    $stmt = "SELECT * FROM login WHERE username='$username'";
-    
-    $query = $conn->query($stmt);
-    $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    // var_dump($result);
-
-    $user_data = array_shift($result);
-
-
-  } catch(PDOException $e) {
-
-  }
-
+session_start();
+require_once 'auth.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laces - Home Page</title>
-    <link rel="icon" type="image/png" href="assets2/logo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/landing.css">
-    <link rel="stylesheet" href="css/master.css">
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+    <title>SipFlask | Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> 
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body id="top">
-    <nav class="navbar bg-white border-bottom py-3 sticky-top">
-        <div class="container d-flex align-items-center">
-            <a href="<?php echo "$url/index.php"; ?>" class="d-flex align-items-center text-decoration-none text-dark fw-bold fs-4 me-3">
-                <img src="assets2/logo.png" alt="Laces" style="width:35px;" class="me-2">
-                Laces
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-none sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <img src="images/white.png" alt="SipFlask" height="49">
             </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sipNavbar" aria-controls="sipNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <form class="flex-grow-1 mx-3 d-flex justify-content-center" role="search">
-                <div class="position-relative w-100" style="max-width: 900px;">
-                    <input class="form-control rounded-pill border-dark ps-3 pe-5" type="search" placeholder="Search...">
-                    <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
-                </div>
-            </form>
-
-            <div class="d-flex align-items-center gap-3">
-                <a href="cart/cart.php"><button class="btn p-0 border-0 bg-transparent"><img src="assets2/cart.png" width="20"></button></a>
-                <button class="btn p-0 border-0 bg-transparent"><img src="assets2/world.png" width="20"></button>
-                <button class="btn p-0 border-0 bg-transparent"><img src="assets2/si--notifications-alt-2-fill.png" width="20"></button>
-                <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#profileMenu"><img src="assets2/gg--profile.png" width="20"></button>
+            <div class="collapse navbar-collapse justify-content-end" id="sipNavbar">
+                <?php if (isLoggedIn()): ?>
+                    <span class="navbar-text text-white fw-bold me-3 d-lg-block" style="font-size: 1.2em;">Hello, <?= htmlspecialchars(getUserName()) ?></span>
+                <?php endif; ?>
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item px-0"><a class="nav-link fw-bold" href="index.php">Home</a></li>
+                    <li class="nav-item px-0"><a class="nav-link fw-bold" href="listings.php">Listings</a></li>
+                    <li class="nav-item px-0"><a class="nav-link fw-bold" href="contactUs.php">Contact Us</a></li>
+                    <li class="nav-item ms-tight px-0">
+                        <a class="nav-link p-0" href="cart.php"><i class="bi bi-cart4 fs-5"></i></a>
+                    </li>
+                    <?php if (isLoggedIn()): ?>
+                        <?php if (isAdmin()): ?>
+                            <li class="nav-item px-0">
+                                <a class="nav-link fw-bold" href="Admin/index.php">Admin Dashboard</a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item px-0">
+                            <a class="nav-link fw-bold" href="logout.php">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item px-0">
+                            <a class="nav-link fw-bold" href="login.php">Login</a>
+                        </li>
+                        <li class="nav-item px-0">
+                            <a class="nav-link fw-bold" href="register.php">Register</a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="nav-row">
-        <div class="nav-container">
-            <a href="#top" class="nav-link custom-hover">Home</a>
-            <a href="#trending" class="nav-link custom-hover">Trending</a>
-            <a href="#categories" class="nav-link custom-hover">Categories</a>
-            <a href="product-list.php" class="nav-link custom-hover">Product List</a>
+    <?php if (isset($_SESSION['order_success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i> <?= $_SESSION['order_success'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    </div>  
+        <?php unset($_SESSION['order_success']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['order_error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i> <?= $_SESSION['order_error'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['order_error']); ?>
+    <?php endif; ?>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="profileMenu" aria-labelledby="profileMenuLabel">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="offcanvas-title fw-bold" id="profileMenuLabel">My Account</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="text-center mb-4">
-                <img src="assets2/gg--profile.png" width="70" class="mb-2 opacity-75">
-                <h6 class="fw-bold">Welcome back!</h6>
-                <p class="small text-muted">Manage your orders and preferences</p>
-            </div>
-            <div class="list-group list-group-flush">
-                <a href="<?php echo "$url/profilepage.php"; ?>" class="list-group-item list-group-item-action border-0 py-3">
-                    <i class="bi bi-person-circle me-3"></i> View Profile
-                </a>
-                <a href="<?php echo "$url/cart/orderHistory.php"; ?>" class="list-group-item list-group-item-action border-0 py-3">
-                    <i class="bi bi-box-seam me-3"></i> My Orders
-                </a>
-                <a href="<?php echo "$url/db/action/logout.php"; ?>" class="list-group-item list-group-item-action border-0 py-3 text-danger">
-                    <i class="bi bi-box-arrow-right me-3"></i> Sign Out
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hero Carousel with 3 slides -->
-    <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="assets2/shoe.jpg" class="d-block w-100 hero-image" alt="Hero 1">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Step into Style</h5>
-                    <p>Discover the latest collection</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="assets2/abibas.jpg" class="d-block w-100 hero-image" alt="Hero 2">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Comfort Meets Performance</h5>
-                    <p>Shop the best sneakers</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="assets2/asics.png" class="d-block w-100 hero-image" alt="Hero 3">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Limited Editions</h5>
-                    <p>Exclusive drops available now</p>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-
-    <!-- Trending Section -->
-    <section id="trending" class="content-section">
-        <div class="section-container">
-            <h2 class="section-title">Trending</h2>
-            <div class="trending-grid">
-                <?php foreach ($trendingProducts as $product): ?>
-                <?php
-                    $productName = escape_html($product['name'] ?? 'Product Name');
-                    $productColor = escape_html($product['color'] ?? 'Black/White');
-                    $productSize = escape_html($product['size'] ?? 'N/A');
-                    $productPrice = number_format((float) ($product['price'] ?? 0), 2);
-                    $productImage = escape_html(resolve_product_image_path_home($product['image'] ?? ''));
-                    $productSales = number_format((int) ($product['sales'] ?? 0));
-                    $productLink = escape_html(product_detail_link($product));
-                ?>
-                <div class="trending-card">
-                    <div class="card-inner">
-                        <div class="image-container">
-                            <div class="image-placeholder">
-                                <img src="<?php echo $productImage; ?>" alt="<?php echo $productName; ?>" class="card-image">
-                                <button class="heart-icon">♡</button>
-                                <div class="sales-container">
-                                    <button class="sales-icon" type="button" aria-label="Sales" style="color:#22c55e;"><i class="bi bi-graph-up-arrow"></i></button>
-                                    <span class="sales-number"><?php echo $productSales; ?> sales</span>
-                                </div>
-                            </div>
+    <main>
+        <section class="hero text-white">
+            <div class="container">
+                <div id="bottleCarousel" class="carousel slide bg-white p-100 rounded shadow-lg mx-auto" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="images/sample2.png" class="d-block w-100 rounded" alt="Front">
                         </div>
-                        <a href="<?php echo $productLink; ?>" style="text-decoration: none;">
-                            <div class="product-details">
-                                <h3 class="product-name"><?php echo $productName; ?></h3>
-                                <p class="product-specs">Color: <?php echo $productColor; ?> | Size: <?php echo $productSize; ?></p>
-                                <p class="product-price">₱<?php echo $productPrice; ?></p>
+                        <div class="carousel-item">
+                            <img src="images/sample.png" class="d-block w-100 rounded" alt="Side">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="images/sample3.png" class="d-block w-100 rounded" alt="Back">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="container-fluid py-4 feature-bg">
+        <div class="row row-cols-auto g-0 justify-content-center align-items-center text-center text-white">
+            <div class="col px-3">
+                <div class="feature-box">
+                    <i class="bi bi-fire h3"></i>
+                    <div class="small-text">KEEPS BEVERAGE <br><strong>HOT</strong></div>
+                </div>
+            </div>
+            <div class="vr opacity-50 my-3" style="height: 40px; background-color: white; width: 1px;"></div>
+            <div class="col px-3">
+                <div class="feature-box">
+                    <i class="bi bi-snow h3"></i>
+                    <div class="small-text">KEEPS BEVERAGE <br><strong>COLD</strong></div>
+                </div>
+            </div>
+            <div class="vr opacity-50 my-3" style="height: 40px; background-color: white; width: 1px;"></div>
+            <div class="col px-3">
+                <div class="feature-box">
+                    <div class="h3 mb-0 fw-bold">BPA</div>
+                    <div class="small-text">FREE</div>
+                </div>
+            </div>
+            <div class="vr opacity-50 my-3" style="height: 40px; background-color: white; width: 1px;"></div>
+            <div class="col px-3">
+                <div class="feature-box">
+                    <div class="h3 mb-0 fw-bold">18/8</div>
+                    <div class="small-text">STAINLESS STEEL</div>
+                </div>
+            </div>
+            <div class="vr opacity-50 my-3" style="height: 40px; background-color: white; width: 1px;"></div>
+            <div class="col px-3">
+                <div class="feature-box">
+                    <i class="bi bi-droplet-half h3"></i>
+                    <div class="small-text">DISHWASHER <br><strong>SAFE</strong></div>
+                </div>
+            </div>
+            <div class="vr opacity-50 my-3" style="height: 40px; background-color: white; width: 1px;"></div>
+            <div class="col px-3">
+                <div class="feature-box">
+                    <i class="bi bi-car-front h3"></i>
+                    <div class="small-text">CUP HOLDER <br>COMPATIBLE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="arrivals py-3 text-center">
+        <div class="container">
+            <h2 class="text-white border-bottom pb-3 mb-3 fw-bold">Featured Products</h2>
+            <div class="row g-3 justify-content-center">
+                
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product-card text-start">
+                        <div class="product-img-container">
+                            <img src="images/16oz/grapejuice.png" alt="Grape Juice" class="img-fluid">
+                        </div>
+                        <div class="product-details">
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="category">CLASSIC</span>
+                                <span class="color-swatch pink-border" style="background-color: #7D92E3;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #D7D9B1;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #8B6F8A;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #e83e8c;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #DBD0E6;"></span>
                             </div>
-                        </a>
-                        <div class="button-group">
-                            <button class="add-to-cart-btn" data-product-id="<?php echo (int)$product['id']; ?>">Add to Basket</button>
-                            <button class="buy-now-btn" data-product-id="<?php echo (int)$product['id']; ?>">Buy Now</button>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="product-title">Grape Juice Flask 16oz</h5>
+                                <span class="price">P850</span>
+                            </div>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="count">(143)</span>
+                            </div>
+                            <p class="product-desc">Your perfect daily companion. Vacuum-insulated, leak-proof, and built to last.</p>
+                            <a href="viewdetails.php?size=16oz" class="btn btn-pink w-100">VIEW DETAILS</a>
                         </div>
                     </div>
                 </div>
-                <?php endforeach; ?>
+
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product-card text-start">
+                        <div class="product-img-container">
+                            <img src="images/25oz/keylime.png" alt="Key Lime" class="img-fluid">
+                        </div>
+                        <div class="product-details">
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="category">CLASSIC</span>
+                                <span class="color-swatch pink-border" style="background-color: #E2E48E;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #B7A982;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #5D6BCF;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #8F7996;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #D8CDE0;"></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="product-title">KeyLime Flask 25oz</h5>
+                                <span class="price">P890</span>
+                            </div>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="count">(256)</span>
+                            </div>
+                            <p class="product-desc">Ditch the plastic. A sustainable and stylish way to enjoy your favorite drinks.</p>
+                            <a href="viewdetails.php?size=25oz" class="btn btn-pink w-100">VIEW DETAILS</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product-card text-start">
+                        <div class="product-img-container">
+                            <img src="images/32oz/noriflask.png" alt="Noriflask" class="img-fluid">
+                        </div>
+                        <div class="product-details">
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="category">CLASSIC</span>
+                                <span class="color-swatch pink-border" style="background-color: #1A2421;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #3D4626;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #6B8077;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #A68E34;"></span>
+                                <span class="color-swatch pink-border" style="background-color: #e83e8c;"></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="product-title">Nori Flask 32oz</h5>
+                                <span class="price">P950</span>
+                            </div>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="count">(89)</span>
+                            </div>
+                            <p class="product-desc">Built for the rugged outdoors. Sweat-proof design with a durable finish.</p>
+                            <a href="viewdetails.php?size=32oz" class="btn btn-pink w-100">VIEW DETAILS</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="listings.php" class="btn btn-pink btn-lg">SHOP MORE</a>
         </div>
     </section>
 
-    <!-- Categories Section -->
-<section id="categories" class="content-section">
-    <div class="section-container">
-        <h2 class="section-title">Categories</h2>
-        <div class="categories-grid">
-            <a href="product-list.php?category=Running%20Shoes&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/run.webp');">
-                <h3 class="category-name">Running Shoes</h3>
-            </a>
-            <a href="product-list.php?category=Court%20Shoes&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/court.jpg');">
-                <h3 class="category-name">Court Shoes</h3>
-            </a>
-            <a href="product-list.php?category=Field%20Shoes&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/field.webp');">
-                <h3 class="category-name">Field Shoes</h3>
-            </a>
-            <a href="product-list.php?category=Gym%20Shoes&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/gym.webp');">
-                <h3 class="category-name">Gym Shoes</h3>
-            </a>
-            <a href="product-list.php?category=Sneakers&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/sneakers.webp');">
-                <h3 class="category-name">Sneakers</h3>
-            </a>
-            <a href="product-list.php?category=Hiking%20Shoes&sort=price&order=ASC" class="category-card text-decoration-none" style="background-image: url('assets2/hike.jpg');">
-                <h3 class="category-name">Hiking Shoes</h3>
-            </a>
-        </div>
-    </div>
-</section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white pt-5 pb-4 mt-5">
+    <section class="container-fluid py-3" style="background-color: #36a094;">
         <div class="container">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <h6 class="fw-bold mb-3">Quick Links</h6>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="index.php" class="text-white-50 text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a href="product-list.php" class="text-white-50 text-decoration-none">Product List</a></li>
-                        <li class="mb-2"><a href="aboutUs.php" class="text-white-50 text-decoration-none">About Us</a></li>
-                        <li class="mb-2"><a href="profilepage.php" class="text-white-50 text-decoration-none">Profile</a></li>
-                        <li class="mb-2"><a href="cart/orderHistory.php" class="text-white-50 text-decoration-none">Order History</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h6 class="fw-bold mb-3">Stay Connected</h6>
-                    <p class="text-white-50 small">Subscribe to our newsletter</p>
-                    <div class="input-group">
-                        <input type="email" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Email address">
-                        <button class="btn btn-warning btn-sm">Subscribe</button>
+            <div class="text-center mb-5">
+                <h2 class="fw-bold" style="color: #ffffff;">Choose Your Flask Size</h2>
+                <div class="footer-logo text-white border-bottom pb-1 mb-3 fw-bold d-flex justify-content-center align-items-center"></div>
+
+                <div class="row justify-content-center g-4 text-center">
+                    <div class="col-6 col-md-3">
+                        <a href="listings.php?size=16oz" class="text-decoration-none size-item">
+                            <div class="product-img-container d-flex align-items-end justify-content-center mb-3" style="height: 250px; background: none; box-shadow: none;">
+                                <img src="images/14oz.png" alt="16oz" class="img-fluid" style="max-height: 160px;">
+                            </div>
+                            <div class="size-badge fw-bold">16OZ</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a href="listings.php?size=25oz" class="text-decoration-none size-item">
+                            <div class="product-img-container d-flex align-items-end justify-content-center mb-3" style="height: 250px; background: none; box-shadow: none;">
+                                <img src="images/14oz.png" alt="25oz" class="img-fluid" style="max-height: 200px;">
+                            </div>
+                            <div class="size-badge fw-bold">25OZ</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a href="listings.php?size=32oz" class="text-decoration-none size-item">
+                            <div class="product-img-container d-flex align-items-end justify-content-center mb-3" style="height: 250px; background: none; box-shadow: none;">
+                                <img src="images/14oz.png" alt="32oz" class="img-fluid" style="max-height: 240px;">
+                            </div>
+                            <div class="size-badge fw-bold">32OZ</div>
+                        </a>
                     </div>
                 </div>
             </div>
-            <hr class="border-secondary mt-4">
-            <div class="row">
-                <div class="col text-center text-white-50 small py-3">
-                    &copy; 2026 Laces. All rights reserved.
-                </div>
+            <div class="footer-logo text-white border-bottom pb-1 mb-3 fw-bold d-flex justify-content-center align-items-center"></div>
+        </div>
+    </section>
+
+     <footer class="custom-footer">
+        <div class="container">
+            <div class="footer-logo text-white border-bottom pb-1 mb-5 fw-bold d-flex justify-content-center align-items-center">
+                <img src="images/exactlogo.png" alt="SipFlask" height="55" class="me-2">
+                SipFlask
+            </div>
+            <ul class="footer-links">
+                <li><a href="index.php">Home</a></li>
+                <li><a href="listings.php">Listings</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="contactUs.php">Contact Us</a></li>
+            </ul>
+            <div class="footer-tagline">#KeepItSipFlask</div>
+            <div class="footer-socials">
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#"><i class="bi bi-tiktok"></i></a>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-credit">Website - SipFlask Website</div>
+                <div class="footer-copyright">All Rights Reserved © 2026 SipFlask</div>
+                <div class="footer-privacy"><a href="#" class="text-white text-decoration-none">Privacy</a></div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="assets2/js/master.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
 </body>
+
 </html>

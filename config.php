@@ -1,7 +1,7 @@
 <?php 
 
-$projectname = "laces2";
+$projectname = "it211";
 $url = "http://localhost/$projectname";
-$images_folder = $_SERVER['DOCUMENT_ROOT'] . "/$projectname/assets2";
+$images_folder = "$_SERVER[DOCUMENT_ROOT]/$projectname/images";
 
 ?>

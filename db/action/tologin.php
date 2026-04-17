@@ -1,54 +1,59 @@
 <?php
 session_start();
+require_once 'db/connection.php';
 
-require "../../config.php";
-require "dbconfig.php"; 
-
-if (isset($_SESSION["username"]) && isset($_SESSION["password"])) {
-    header("Location: $url/index.php");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: login.php');
     exit();
 }
 
-if (isset($_POST["username"]) && isset($_POST["password"])) {
+$email = trim($_POST['email'] ?? '');
+$password = $_POST['password'] ?? '';
 
-    try {
-        $user = $_POST["username"];
-        $pass = md5($_POST["password"]);
+if (empty($email) || empty($password)) {
+    $_SESSION['login_error'] = 'Both email and password are required.';
+    header('Location: login.php');
+    exit();
+}
 
-        $stmt = $conn->prepare(
-            //force binary comparison for username/email to prevent case-insensitive matches
-            "SELECT * FROM login WHERE (BINARY username = :user OR BINARY email = :user) AND password = :pass"
-        );
-        $stmt->execute([
-            ':user' => $user,
-            ':pass' => $pass
-        ]);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['login_error'] = 'Please enter a valid email address.';
+    header('Location: login.php');
+    exit();
+}
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC); 
-        if ($result) {
-            $_SESSION["username"] = $result["username"];
-            $_SESSION["password"] = $result["password"];
-            $_SESSION["role"] = $result["role"];
+try {
+    $stmt = $conn->prepare('SELECT id, first_name, last_name, email, password, is_admin FROM users WHERE email = ? LIMIT 1');
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (in_array($result["role"], ["admin", "superadmin"])) {
-                header("Location: $url/admin/dashboard.php");
-            } else {
-                header("Location: $url/index.php");
-            }
-            exit();
-        } else {
-            echo "Login Failed. You will be redirected in 3 seconds.";
-            header("Refresh: 3; url=$url/loginpage.php");
-            exit();
-        }
-
-    } catch (PDOException $e) {
-        die("Connection error: " . $e->getMessage());
+    if (!$user) {
+        $_SESSION['login_error'] = 'Email or password is incorrect.';
+        header('Location: login.php');
+        exit();
     }
 
-} else {
-    echo "No values found. Redirecting...";
-    header("Refresh: 2; url=$url/login.php");
+    if (!password_verify($password, $user['password'])) {
+        $_SESSION['login_error'] = 'Email or password is incorrect.';
+        header('Location: login.php');
+        exit();
+    }
+
+    // Login successful
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+    $_SESSION['user_email'] = $user['email'];
+    $_SESSION['is_admin'] = !empty($user['is_admin']) ? 1 : 0;
+    $_SESSION['login_success'] = 'Login successful. Welcome back!';
+    if (!empty($_SESSION['is_admin'])) {
+        header('Location: Admin/index.php');
+    } else {
+        header('Location: index.php');
+    }
+    exit();
+} catch (PDOException $e) {
+    $_SESSION['login_error'] = 'Database error: ' . $e->getMessage();
+    header('Location: login.php');
     exit();
 }
 ?>

@@ -1,211 +1,594 @@
-/* ============================================
-    LACES STYLESHEET
-    File: style.css
-    ============================================ */
-
-/* --- Global & Variables --- */
-:root {
-    --laces-yellow: #ffc107;
-    --laces-yellow-hover: #e0a800;
-    --scroll-speed: 20s;
-    --bg-light: #f8f9fa;
-    --text-dark: #1a1a1a;
-    --text-muted: #6c757d;
-}
-
-body, html {
-    height: 100%;
+/* =========================================
+   GLOBAL STYLES (Design para sa lahat)
+   ========================================= */
+* {
     margin: 0;
-    /* Change 'hidden' to 'auto' or 'visible' to allow scrolling */
-    overflow-x: hidden; /* Prevents side-scrolling from the animation */
-    overflow-y: auto;   /* Allows vertical scrolling for long content */
-    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* --- Left Side: Scrolling Branding --- */
-.scrolling-container {
-    /* ... other properties ... */
-    
-    /* REMOVE 'assets/' because the CSS file is ALREADY in that folder */
-    background-image: url('Scroll.png'); 
-    
-    background-size: auto 100%;
-    background-repeat: repeat-x;
-    animation: scrollHorizontal var(--scroll-speed) linear infinite;
-    opacity: 0.9;
+body {
+    background-color: #00808094; /* Kulay ng background ng page */
 }
 
-@keyframes scrollHorizontal {
-    from { background-position: 0 0; }
-    to { background-position: -2000px 0; } 
+/* =========================================
+   NAVIGATION BAR (Menu sa itaas)
+   ========================================= */
+.navbar {
+    background-color: #39afaf;
+    transition: background-color 0.3s ease;
 }
 
-.display-brand {
-    font-size: 8rem;
-    font-weight: 900;
-    color: #000;
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+.navbar-light .navbar-toggler-icon {
+    filter: invert(1) brightness(1.4);
+}
+
+.nav-link {
+    font-weight: 600;
+    margin: 0 15px;
+}
+
+#sipNavbar .nav-link,
+#sipNavbar .nav-link i {
+    color: #ffffff; /* Kulay ng text at icons */
+    transition: color 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(57, 175, 175, 0.95);
+        margin-top: 10px;
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .navbar-nav .nav-item {
+        width: 100%;
+    }
+
+    .navbar-nav .nav-link {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        margin: 0;
+    }
+
+    .navbar-text {
+        width: 100%;
+        color: #ffffff;
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .feature-bg .row {
+        justify-content: center;
+    }
+
+    .feature-bg .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .feature-box {
+        min-width: auto;
+    }
+}
+
+#sipNavbar .nav-link:hover,
+#sipNavbar .nav-link:hover i {
+    color: #6c757d; /* Kulay kapag tinapatan ng mouse */
+}
+
+/* =========================================
+   HERO & CAROUSEL SECTION (Banner na gumagalaw)
+   ========================================= */
+.hero {
+    background-color: #69baba;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+#bottleCarousel {
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    background-color: rgb(35, 30, 30);
+    overflow: hidden;
+}
+
+#bottleCarousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* =========================================
+   FEATURE BAR (Hot/Cold icons)
+   ========================================= */
+.feature-bg {
+    background-color: #4ab5b9;
+    color: white;
+}
+
+.feature-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+    margin: 0 30px;
+}
+
+.small-text {
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: -6px;
-    line-height: 1;
-    z-index: 10;
-    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
-}
-
-/* --- Right Side: Form Column --- */
-.form-column {
-    background-color: #ffffff;
-    z-index: 20;
-    padding: 0 8%;
-    box-shadow: -15px 0 50px rgba(0, 0, 0, 0.2); 
-    border-left: 1px solid rgba(0,0,0,0.05);
-}
-
-.form-title {
-    font-weight: 900;
-    font-size: 3rem;
-    letter-spacing: -1.5px;
-    color: var(--text-dark);
-}
-
-.form-subtitle {
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 2rem;
-}
-
-/* --- Inputs & Buttons --- */
-.small-label {
-    font-weight: 700;
-    color: #495057;
-    margin-left: 2px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    font-size: 0.7rem;
+    line-height: 1.1;
     letter-spacing: 0.5px;
 }
 
-.form-control {
-    border-radius: 12px !important;
-    padding: 14px 20px;
-    background-color: #fcfcfc;
-    border: 2px solid #f1f3f5; 
+/* =========================================
+   PRODUCT CARD SECTION (Box ng mga produkto)
+   ========================================= */
+.product-card {
+    background-color: #e3e4de;
+    border-radius: 20px;
+    border: 1px solid #d1d1cc;
+    padding: 15px;
+    max-width: 300px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-12px) scale(1.02); /* Umaangat pag tinapatan */
+    border-color: #69baba;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.product-img-container {
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.product-img-container img {
+    max-height: 180px;
+    object-fit: contain;
+    width: auto;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+    transition: all 0.3s ease;
+}
+
+.category {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.product-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.price {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+/* =========================================
+   CHECKOUT PAGE STYLES (added for layout fix)
+   ========================================= */
+
+/* Checkout container */
+.checkout-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Card common styles */
+.address-card,
+.product-card-checkout,
+.payment-card,
+.summary-card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-header-custom {
+    background: #f8f9fa;
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #e9ecef;
+    color: #1b739a;
+}
+
+.address-display {
+    padding: 20px;
+}
+
+.address-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.address-details {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.btn-change {
+    color: #1b739a;
+    text-decoration: none;
     font-weight: 600;
 }
 
-.form-control:hover {
-    border-color: #dee2e6;
-    background-color: #fff;
+.btn-change:hover {
+    text-decoration: underline;
 }
 
-.form-control:focus {
-    border-color: var(--laces-yellow);
-    background-color: #fff;
-    box-shadow: 0 10px 20px rgba(255, 193, 7, 0.12);
-    transform: translateY(-2px);
-}
-
-.btn-aces {
-    background-color: var(--laces-yellow);
-    border: none;
-    border-radius: 12px !important;
-    padding: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-dark);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
-}
-
-.btn-aces:hover {
-    background-color: var(--laces-yellow-hover);
-    transform: scale(1.02);
-    box-shadow: 0 12px 25px rgba(255, 193, 7, 0.4);
-}
-
-footer {
-    background-color: #f1f1f1 !important; /* Matches the subtle grey in your screenshot */
-}
-
-footer h6 {
-    font-size: 0.85rem;
-    text-transform: none; /* Keeps it modern and soft */
-}
-
-footer ul li a {
-    transition: color 0.2s ease;
-}
-
-footer ul li a:hover {
-    color: #000 !important; /* Darker text on hover for feedback */
-}
-
-/* Ensure social icons react to hover too */
-footer .bi:hover {
-    color: var(--laces-yellow);
-    cursor: pointer;
-}
-
-/* Removes the grey background specifically for footers inside forms */
-form footer {
-    background-color: transparent !important;
-    padding: 0 !important;
-    margin-top: 1rem;
-}
-
-.nav-icon {
-    height: 24px; /* Adjust this to match your design feel */
-    width: auto;
+.product-img-checkout {
+    width: 70px;
+    height: 70px;
     object-fit: contain;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    background-color: #f8f9fa;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.product-name-checkout {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.product-variation {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Payment and shipping options */
+.payment-option,
+.shipping-option {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.payment-option:hover,
+.shipping-option:hover {
+    border-color: #1b739a;
+    background: #f0f9ff;
+}
+
+.payment-option.selected,
+.shipping-option.selected {
+    border-color: #1b739a;
+    background: #e6f4f0;
+    box-shadow: 0 2px 8px rgba(27, 115, 154, 0.1);
+}
+
+/* Order summary */
+.price-breakdown {
+    margin-bottom: 20px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid #dee2e6;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.btn-place-order {
+    background: #1b739a;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-place-order:hover {
+    background: #0f5a7a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(27, 115, 154, 0.3);
+}
+
+/* Continue shopping button (cart page also uses this) */
+.btn-continue {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-continue:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.btn-clear {
+    background: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #c82333;
+}
+
+/* Cart table */
+.cart-table th,
+.cart-table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.quantity-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.delete-btn {
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+.delete-btn:hover {
+    color: #a71d2a;
+}
+
+.order-summary {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+}
+
+.btn-checkout {
+    background: #1b739a;
+    color: white;
+    padding: 12px;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-checkout:hover {
+    background: #0f5a7a;
+    color: white;
+}
+
+/* =========================================
+   PRODUCT LAYOUT (Details Page design)
+   ========================================= */
+.viewdetails-body {
+    background-color: #00808094;
+}
+
+.product-container-card {
+    background-color: #b4b5b3;
+    border-radius: 20px;
+    border: 1px solid #d1d1cc;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    display: flex;
+    gap: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-image-shadow {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+.product-image-border {
+    border: 2px solid rgba(0, 0, 0, 0.148);
+    border-radius: 8px;
+}
+
+.product-main-img {
+    background-color: #f8f9fa;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+}
+
+.color-swatch-large {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.color-swatch-large:hover {
+    border-color: #36a094;
+    transform: scale(1.1);
+}
+
+/* =========================================
+   SIZE SELECTION (Pagpili ng sukat)
+   ========================================= */
+.size-item {
+    display: block;
+    transition: transform 0.3s ease !important;
     cursor: pointer;
 }
 
-.nav-icon:hover {
-    transform: scale(1.1); /* Adds a little "pop" when hovered */
-    opacity: 0.7;
+.size-item:hover {
+    transform: translateY(-10px); /* Umaangat ang bote */
 }
 
-/* --- Profile Specifics --- */
-.profile-avatar {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.username-edit-input {
+.size-badge {
+    display: inline-block;
+    background-color: #1b739a;
+    color: #ffffff !important;
+    padding: 6px 25px;
+    border-radius: 50px;
     transition: all 0.3s ease;
-    min-width: 250px;
 }
 
-.username-edit-input:focus {
-    background-color: #fff !important;
-    border-bottom-color: var(--laces-yellow) !important;
-    color: #000;
+.size-item:hover .size-badge {
+    background-color: #ffffff;
+    color: #36a094 !important;
 }
 
-/* Custom shadow for the Payment Method card */
-.details-panel {
-    border-radius: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+/* =========================================
+   BUTTONS (Mga pindutan)
+   ========================================= */
+.btn-pink {
+    background-color: #1b739a;
+    color: white;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 10px;
+    border: none;
+    transition: transform 0.2s;
 }
 
-/* Fix for the off-center search icon on Profile screens */
-.profile-search-wrap .bi-search {
-    right: 15px !important; /* Forces alignment to the right edge */
-    left: auto !important;  /* Prevents left-side inheritance */
-    pointer-events: none;    /* Ensures clicking the icon still focuses the input */
+.btn-pink.btn-lg {
+    padding: 10px 30px;
+    border-radius: 50px;
+    background-color: #31a1a1;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.profile-search-wrap input {
-    padding-right: 45px !important; /* Prevents text from overlapping the icon */
+.btn-pink.btn-lg:hover {
+    background-color: #3a00e6;
+    transform: translateY(-3px);
 }
 
-/* Keep navbar search bars pill-shaped on pages that include this stylesheet. */
-.search-pill {
-    border-radius: 999px !important;
+/* =========================================
+   FILTER SECTION (Pangsala sa listahan)
+   ========================================= */
+.filter-section {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.label {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* =========================================
+   FOOTER (Sa pinakababa ng page)
+   ========================================= */
+.custom-footer {
+    background: linear-gradient(to right, #00CEC8, #005451);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-links { 
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footer-socials a {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 12px;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
