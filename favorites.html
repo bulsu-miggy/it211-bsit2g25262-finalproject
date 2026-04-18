@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Favorites</title>
+
+<style>
+:root{
+  --bg:#0B0F1A;
+  --surface:#121826;
+  --card:#1A2235;
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --muted:#AAB2C0;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#333947;
+  color:white;
+}
+
+header{
+  padding:15px;
+  background:var(--surface);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h2{
+  margin:0;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.card{
+  background:var(--card);
+  padding:15px;
+  margin:10px;
+  border-radius:10px;
+}
+
+button{
+  border:none;
+  padding:8px 12px;
+  margin-top:8px;
+  cursor:pointer;
+  border-radius:6px;
+  color:white;
+}
+
+.add{background:#8B5CF6;}
+.buy{background:#22D3EE;}
+.del{background:#FF4D9D;}
+
+/*  MODAL */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:var(--surface);
+  padding:40px 50px;
+  border-radius:15px;
+  text-align:center;
+  min-width:320px;
+  color:white;
+  box-shadow:0 0 40px rgba(139,92,246,0.6);
+  transform:scale(0.8);
+  transition:0.3s;
+}
+
+.modal.show .modal-box{
+  transform:scale(1);
+}
+
+.modal-box h2{
+  margin-bottom:10px;
+  color:var(--cyan);
+}
+
+.modal-box p{
+  color:var(--muted);
+}
+
+.modal-box button{
+  margin-top:20px;
+  padding:10px 25px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:white;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>Favorites</h2>
+  <div>
+    <button onclick="location.href='products.html'" style="background:#1A2235;">Products</button>
+    <button onclick="location.href='cart.html'" style="background:#1A2235;">Cart</button>
+  </div>
+</header>
+
+<div id="favBox"></div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">Message</h2>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+
+// MODAL
+function showModal(title, msg){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+// GET FAVORITES
+function getFav(){
+  return JSON.parse(localStorage.getItem("favorites")) || [];
+}
+
+// SAVE FAVORITES
+function saveFav(fav){
+  localStorage.setItem("favorites", JSON.stringify(fav));
+}
+
+// LOAD FAVORITES
+function loadFav(){
+  let fav = getFav();
+  let box = document.getElementById("favBox");
+
+  box.innerHTML = "";
+
+  if(fav.length === 0){
+    box.innerHTML = "<h3 style='padding:20px'>No Favorites Yet</h3>";
+    return;
+  }
+
+  fav.forEach((item,i)=>{
+    box.innerHTML += `
+      <div class="card">
+        <b>${item.name}</b><br>
+        P${item.price}<br>
+
+        <button class="add" onclick="addToCart('${item.name}',${item.price})">Add to Cart</button>
+        <button class="buy" onclick="buyNow('${item.name}',${item.price})">Buy Now</button>
+        <button class="del" onclick="removeFav(${i})">Remove</button>
+      </div>
+    `;
+  });
+}
+
+// ADD TO CART (MODAL FIXED)
+function addToCart(name,price){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let exist = cart.find(item => item.name === name);
+
+  if(exist){
+    exist.qty += 1;
+  } else {
+    cart.push({name,price,qty:1});
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  showModal("Added to Cart", name + " was added successfully!");
+}
+
+// BUY NOW
+function buyNow(name,price){
+  let cart = [{name:name, price:price, qty:1}];
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  window.location.href = "checkout.html";
+}
+
+// REMOVE FAVORITE
+function removeFav(i){
+  let fav = getFav();
+  fav.splice(i,1);
+  saveFav(fav);
+  loadFav();
+
+  showModal("Removed", "Item removed from favorites");
+}
+
+// RUN
+loadFav();
+
+</script>
+
+</body>
+</html>

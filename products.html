@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AEROSTEP Shop</title>
+
+<style>
+:root{
+  --bg:#252839;
+  --surface:#121826;
+  --card:#1A2235;
+
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+
+  --text:#fff;
+  --muted:#AAB2C0;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#333947;
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  background:var(--surface);
+  border-bottom:1px solid #222b3d;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  font-weight:bold;
+  font-size:18px;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+nav span{
+  margin:0 8px;
+  cursor:pointer;
+  color:var(--muted);
+  font-weight:bold;
+}
+
+nav span:hover{
+  color:var(--cyan);
+}
+
+.right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+input{
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #2a3550;
+  background:#0f1424;
+  color:white;
+}
+
+#userName{
+  color:var(--cyan);
+  font-weight:bold;
+}
+
+.logout-btn{
+  width:auto;
+  padding:6px 10px;
+  background:#1A2235;
+  color:white;
+  border:none;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+/* BANNER */
+.banner{
+  width:100%;
+  height:650px;
+  overflow:hidden;
+}
+
+.banner img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(0.7);
+}
+
+/* SECTION */
+h2{
+  margin:25px 0 10px;
+  color:var(--cyan);
+  padding-left:10px;
+}
+
+/* CONTAINER */
+.container{
+  padding:20px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  transition:0.3s;
+  border: 3px solid #3e4557;
+}
+
+.card:hover{
+  transform:scale(1.05);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* PRICE */
+.price-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:8px;
+}
+
+.price-row span{
+  font-weight:bold;
+  color:var(--cyan);
+}
+
+/* BUTTONS */
+.btn-row{
+  display:flex;
+  gap:6px;
+}
+
+.btn-row button{
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  color:white;
+}
+
+.add-btn{ background:#8B5CF6; }
+.fav-btn{ background:#8B5CF6; }
+
+/*  TOAST DESIGN  */
+.toast{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0.8);
+  background:rgba(26,34,53,0.95);
+  color:white;
+  padding:30px 50px;
+  border-radius:18px;
+  font-size:22px;
+  font-weight:bold;
+  text-align:center;
+  box-shadow:0 0 30px rgba(139,92,246,0.7);
+  opacity:0;
+  pointer-events:none;
+  transition:0.5s ease;
+  z-index:9999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+  margin-bottom:10px;
+  color:var(--cyan);
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<header>
+  <div class="left">
+    <div class="logo">AEROSTEP</div>
+    <nav>
+      <span onclick="show('all')">Home</span>
+      <span onclick="show('men')">Men</span>
+      <span onclick="show('women')">Women</span>
+    </nav>
+  </div>
+
+  <div class="right">
+    <input placeholder="Search..." onkeyup="search(this.value)">
+    <span id="userName"></span>
+    <span class="logout-btn" onclick="location.href='cart.html'">Cart</span>
+    <span class="logout-btn" onclick="location.href='favorites.html'">Favorites</span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<!-- BANNER -->
+<div class="banner">
+  <img src="images/Shoes.png">
+</div>
+
+<div class="container">
+
+<h2>AEROSTEP VELO</h2>
+
+<div class="grid">
+
+  <!-- PRODUCT 1 -->
+  <div class="card" data="women">
+    <img src="Images/Shoes/1.png">
+    <h3>AEROSTEP NOVA</h3>
+<h5>Jogging Shoe</h5>
+    <div class="price-row">
+      
+      <span>P1500</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP NOVA',1500)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP NOVA',1500)">Favorite</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRODUCT 2 -->
+  <div class="card" data="men">
+    <img src="Images/Shoes/2.png">
+    <h3>AEROSTEP STRIDE</h3>
+    <h5>Running Shoe</h5>
+
+    <div class="price-row">
+      <span>P2400</span>
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP STRIDE',2400)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP STRIDE',2400)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 3 -->
+  <div class="card" data="men">
+    <img src="Images/Shoes/3.png">
+    <h3>AEROSTEP VELO</h3>
+    <h5>Volleyball Shoe</h5>
+
+    <div class="price-row">
+      <span>P3800</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELO',3800)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELO',3800)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 4 -->
+  <div class="card" data="women">
+    <img src="Images/Shoes/4.png">
+    <h3>AEROSTEP ELEVATE</h3>
+    <h5>Running Shoe</h5>
+
+    <div class="price-row">
+      <span>P2500</span>
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP ELEVATE',2500)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP ELEVATE',2500)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 5 -->
+  <div class="card" data="men">
+    <img src="Images/Shoes/5.png">
+    <h3>AEROSTEP VELO</h3>
+    <h5>Basketball Shoe</h5>
+
+    <div class="price-row">
+      <span>P5700</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELO',5700)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELO',5700)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 6 -->
+  <div class="card" data="men">
+    <img src="Images/Shoes/6.png">
+    <h3>AEROSTEP VELO</h3>
+    <h5>Basketball Shoe</h5>
+
+    <div class="price-row">
+      <span>P5700</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELO',5700)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELO',5700)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 7 -->
+  <div class="card" data="men">
+    <img src="Images/Shoes/7.png">
+    <h3>AEROSTEP VELO</h3>
+    <h5>SkySoft Women</h5>
+
+
+    <div class="price-row">
+      <span>P2200</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELO',2200)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELO',2200)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 8 -->
+  <div class="card" data="women">                                   
+    <img src="Images/Shoes/8.png">
+    <h3>AEROSTEP VELO</h3>
+    <h5>SkySoft Women</h5>
+
+
+    <div class="price-row">
+      <span>P2200</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELO',2200)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELO',2200)">Favorite</button>
+      </div>
+    </div>
+    
+</div>
+
+</div>
+
+
+<div class="banner">
+  <img src="Images/Clothes.png">
+</div>
+
+<h2>AEROSTEP APPAREL</h2>
+
+<div class="grid">
+
+  <!-- PRODUCT 1 -->
+  <div class="card" data="men">
+    <img src="Images/Clothes/1.jpg">
+    <h3>AEROSTEP DRIFT JACKET</h3>
+    <h5>Jacket Men</h5>
+
+    <div class="price-row">
+      <span>P1400</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP DRIFT JACKET',1400)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP DRIFT JACKET',1400)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 2 -->
+  <div class="card" data="men">
+    <img src="Images/Clothes/2.jpg">
+    <h3>AEROSTEP STRYDE</h3>
+    <h5>Shirt Men</h5>
+
+    <div class="price-row">
+      <span>P9600</span>
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP STRYDE',9600)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP STRYDE',9600)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 3 -->
+  <div class="card" data="women">
+    <img src="Images/Clothes/3.jpg">
+    <h3>AEROSTEP VELOCITY SHELL</h3>
+    <h5>Shirt Women</h5>
+
+    <div class="price-row">
+      <span>P980</span>
+
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP VELOCITY SHELL',980)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP VELOCITY SHELL',980)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT 4 -->
+  <div class="card" data="women">
+    <img src="Images/Clothes/4.jpg">
+    <h3>AEROSTEP ROGUE WINDBREAKER</h3>
+    <h5>Jacket Women</h5>
+
+    <div class="price-row">
+      <span>P1250</span>
+      <div class="btn-row">
+        <button class="add-btn" onclick="add('AEROSTEP ROGUE WINDBREAKER',1250)">Add Cart</button>
+        <button class="fav-btn" onclick="favorite('AEROSTEP ROGUE WINDBREAKER',1250)">Favorite</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+
+// TOAST
+function showToast(msg){
+  let toast=document.getElementById("toast");
+  toast.innerText=msg;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },1500);
+}
+
+// LOAD USER
+function loadUser(){
+  let user = JSON.parse(localStorage.getItem("currentUser"));
+
+  if(!user){
+    window.location.href="login.html";
+    return;
+  }
+
+  document.getElementById("userName").innerText="Profile: "+user.name;
+}
+loadUser();
+
+// LOGOUT
+function logout(){
+  localStorage.removeItem("loggedIn");
+  showToast("Logged out");
+  setTimeout(()=>location.href="login.html",1000);
+}
+
+// ADD CART
+function add(name,price){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push({name,price});
+  localStorage.setItem("cart",JSON.stringify(cart));
+
+  showToast("Added to Cart!");
+}
+
+// FAVORITE
+function favorite(name,price){
+  let fav = JSON.parse(localStorage.getItem("favorites")) || [];
+  let exists = fav.find(i => i.name === name);
+
+  if(!exists){
+    fav.push({name,price});
+    localStorage.setItem("favorites",JSON.stringify(fav));
+    showToast("Added to Favorites!");
+  } else {
+    showToast("Already in Favorites");
+  }
+}
+
+// SEARCH
+function search(val){
+  val = val.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display = c.innerText.toLowerCase().includes(val) ? "block":"none";
+  });
+}
+
+// FILTER
+function show(cat){
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display = (cat==="all" || c.getAttribute("data")===cat) ? "block":"none";
+  });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AEROSTEP Checkout</title>
+
+<style>
+:root{
+  --bg:#0B0F1A;
+  --surface:#121826;
+  --card:#1A2235;
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --text:#fff;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#333947;
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  background:var(--surface);
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h2{
+  margin:0;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  padding:20px;
+}
+
+.box{
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+}
+
+input, select{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  border:none;
+  background:#0f1424;
+  color:white;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  cursor:pointer;
+  color:white;
+  font-weight:bold;
+  border-radius:8px;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  background:var(--surface);
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:10px;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:var(--surface);
+  padding:40px 50px;
+  border-radius:15px;
+  text-align:center;
+  min-width:320px;
+  color:white;
+  box-shadow:0 0 40px rgba(139,92,246,0.6);
+  transform:scale(0.8);
+  transition:0.3s;
+}
+
+.modal.show .modal-box{
+  transform:scale(1);
+}
+
+.modal-box h2{
+  color:var(--cyan);
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  color:#AAB2C0;
+}
+
+.modal-box button{
+  margin-top:20px;
+  width:auto;
+  padding:10px 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>AEROSTEP CHECKOUT</h2>
+  <button onclick="location.href='products.html'" style="background:#1A2235;">Back</button>
+</header>
+
+<div class="container">
+
+<!-- LEFT -->
+<div class="box">
+
+<h3>Delivery Details</h3>
+
+<h5>Full Name</h5>
+<input id="name" placeholder="Full Name">
+<h5>Phone Number</h5>
+<input id="phone" placeholder="Phone Number">
+<h5>Address</h5>
+<input id="address" placeholder="Address">
+
+<h3>Payment Method</h3>
+
+<select id="payment">
+  <option value="">Select Payment</option>
+  <option>Cash on Delivery</option>
+  <option>GCash</option>
+  <option>Card</option>
+</select>
+
+<button onclick="placeOrder()">Place Order</button>
+
+</div>
+
+<!-- RIGHT -->
+<div class="box">
+<h3>Your Items</h3>
+<div id="items"></div>
+<h3 id="total"></h3>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">Message</h2>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+
+// MODAL 
+function showModal(title, msg){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+// LOAD CART
+function loadCart(){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let box = document.getElementById("items");
+  let total = 0;
+
+  box.innerHTML = "";
+
+  cart.forEach(i=>{
+    total += i.price * (i.qty || 1);
+
+    box.innerHTML += `
+      <div class="item">
+        <span>${i.name}</span>
+        <span>P${i.price} x ${i.qty || 1}</span>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").innerText = "Total: P" + total;
+}
+
+// PLACE ORDER (MODAL)
+function placeOrder(){
+
+  let name = document.getElementById("name").value;
+  let phone = document.getElementById("phone").value;
+  let address = document.getElementById("address").value;
+  let payment = document.getElementById("payment").value;
+
+  if(!name || !phone || !address || !payment){
+    showModal("Error", "Please fill all fields");
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  if(cart.length === 0){
+    showModal("Cart Empty", "No items in your cart");
+    return;
+  }
+
+  let order = {
+    name,
+    phone,
+    address,
+    payment,
+    items: cart
+  };
+
+  localStorage.setItem("order", JSON.stringify(order));
+  localStorage.removeItem("cart");
+
+  showModal("Success", "Order placed successfully!");
+
+  setTimeout(()=>{
+    window.location.href = "order.html";
+  },1200);
+}
+
+loadCart();
+
+</script>
+
+</body>
+</html>

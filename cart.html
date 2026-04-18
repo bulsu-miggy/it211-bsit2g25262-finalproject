@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AEROSTEP Cart</title>
+
+<style>
+:root{
+  --bg:#0B0F1A;
+  --surface:#121826;
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --text:#fff;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#333947;
+  color:var(--text);
+}
+
+header{
+  background:var(--surface);
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+}
+
+h2{
+  margin:0;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.container{padding:20px;}
+
+.item{
+  background:var(--surface);
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+button{
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+}
+
+.qty{background:var(--violet);}
+.del{background:var(--pink);}
+
+.total{
+  margin-top:20px;
+  font-size:20px;
+  color:var(--cyan);
+}
+
+.checkout{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+}
+
+/*  MODAL  */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:var(--surface);
+  padding:40px 50px;
+  border-radius:15px;
+  text-align:center;
+  min-width:320px;
+  color:white;
+  box-shadow:0 0 40px rgba(139,92,246,0.6);
+  transform:scale(0.8);
+  transition:0.3s;
+}
+
+.modal.show .modal-box{
+  transform:scale(1);
+}
+
+.modal-box h2{
+  margin-bottom:10px;
+  color:var(--cyan);
+}
+
+.modal-box p{
+  color:#AAB2C0;
+}
+
+.modal-box button{
+  margin-top:20px;
+  padding:10px 25px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>CART</h2>
+  <button onclick="location.href='products.html'" style="background:#1A2235;">Back</button>
+</header>
+
+<div class="container" id="cartBox"></div>
+
+<div class="container total">
+  Total: ₱<span id="total">0</span>
+</div>
+
+<div class="container">
+  <button class="checkout" onclick="checkout()">Checkout</button>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">Message</h2>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+
+//  MODAL 
+function showModal(title, msg){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+// CART
+function getCart(){
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function saveCart(cart){
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function loadCart(){
+  let cart = getCart();
+  let box = document.getElementById("cartBox");
+  let total = 0;
+
+  box.innerHTML = "";
+
+  if(cart.length === 0){
+    box.innerHTML = "<h3>No items in cart</h3>";
+    return;
+  }
+
+  cart.forEach((item,i)=>{
+    total += item.price * item.qty;
+
+    box.innerHTML += `
+      <div class="item">
+        <div>
+          <b>${item.name}</b><br>
+          ₱${item.price} x ${item.qty}
+        </div>
+
+        <div>
+          <button class="qty" onclick="changeQty(${i},1)">+</button>
+          <button class="qty" onclick="changeQty(${i},-1)">-</button>
+          <button class="del" onclick="removeItem(${i})">X</button>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").innerText = total;
+}
+
+// QTY CHANGE
+function changeQty(i,val){
+  let cart = getCart();
+  cart[i].qty += val;
+
+  if(cart[i].qty <= 0){
+    cart.splice(i,1);
+  }
+
+  saveCart(cart);
+  loadCart();
+
+  showModal("Updated", "Cart quantity updated");
+}
+
+// REMOVE
+function removeItem(i){
+  let cart = getCart();
+  let itemName = cart[i].name;
+
+  cart.splice(i,1);
+  saveCart(cart);
+  loadCart();
+
+  showModal("Removed", itemName + " removed from cart");
+}
+
+// CHECKOUT
+function checkout(){
+  let cart = getCart();
+
+  if(cart.length === 0){
+    showModal("Cart Empty", "Please add items first");
+    return;
+  }
+
+  showModal("Checkout", "Proceeding to checkout...");
+
+  setTimeout(()=>{
+    window.location.href = "checkout.html";
+  },1200);
+}
+
+loadCart();
+
+</script>
+
+</body>
+</html>

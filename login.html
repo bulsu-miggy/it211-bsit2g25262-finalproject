@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEROSTEP Login</title>
+
+<style>
+:root {
+  --bg:#0B0F1A;
+  --surface:#121826;
+  --elevated:#1A2235;
+
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+
+  --text:#fff;
+  --muted:#AAB2C0;
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial;
+}
+
+body {
+  display:flex;
+  height:100vh;
+  background:var(--bg);
+}
+
+/* LEFT VIDEO */
+.left {
+  width:50%;
+  position:relative;
+}
+
+.left video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.left::after {
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+}
+
+/* RIGHT */
+.right {
+  width:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#333947;
+}
+
+/* CARD */
+.container {
+  background:var(--surface);
+  width:360px;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  border:1px solid #202a40;
+}
+
+.logo {
+  text-align:center;
+  padding:20px;
+  color:var(--cyan);
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.tabs {
+  display:flex;
+}
+
+.tabs label {
+  width:50%;
+  text-align:center;
+  padding:15px;
+  cursor:pointer;
+  color:var(--muted);
+  font-weight:bold;
+}
+
+input[type="radio"] {
+  display:none;
+}
+
+#signin:checked ~ .tabs label[for="signin"],
+#signup:checked ~ .tabs label[for="signup"] {
+  color:var(--cyan);
+  border-bottom:2px solid var(--cyan);
+}
+
+.forms {
+  display:flex;
+  width:200%;
+  transition:0.5s;
+}
+
+.form {
+  width:50%;
+  padding:25px;
+  color:white;
+}
+
+#signup:checked ~ .forms {
+  transform:translateX(-50%);
+}
+
+input {
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #2a3550;
+  background:var(--elevated);
+  color:white;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  color:white;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+}
+
+button:hover {
+  transform:scale(1.03);
+}
+
+/*  MODAL  */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.6);
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:var(--surface);
+  padding:40px 50px;
+  border-radius:15px;
+  text-align:center;
+  color:white;
+  min-width:300px;
+  box-shadow:0 0 40px rgba(139,92,246,0.5);
+  transform:scale(0.8);
+  transition:0.3s;
+}
+
+.modal.show .modal-box{
+  transform:scale(1);
+}
+
+.modal-box h2{
+  margin-bottom:10px;
+  color:var(--cyan);
+}
+
+.modal-box p{
+  color:var(--muted);
+}
+
+.modal-box button{
+  margin-top:20px;
+  width:auto;
+  padding:10px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LEFT VIDEO -->
+<div class="left">
+  <video autoplay muted loop>
+    <source src="videos/aerostep.mp4" type="video/mp4">
+  </video>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+
+  <div class="container">
+
+    <div class="logo">AEROSTEP</div>
+
+    <input type="radio" name="tab" id="signin" checked>
+    <input type="radio" name="tab" id="signup">
+
+    <div class="tabs">
+      <label for="signin">Sign In</label>
+      <label for="signup">Sign Up</label>
+    </div>
+
+    <div class="forms">
+
+      <!-- LOGIN -->
+      <div class="form">
+        <h3>Welcome Back</h3>
+        <input id="loginEmail" type="email" placeholder="Email">
+        <input id="loginPass" type="password" placeholder="Password">
+        <button onclick="login()">Sign In</button>
+
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="form">
+        <h3>Create Account</h3>
+        <input id="name" type="text" placeholder="Full Name">
+        <input id="email" type="email" placeholder="Email">
+        <input id="pass" type="password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">Message</h2>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+
+// MODAL FUNCTIONS
+function showModal(title, msg){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+// SIGN UP
+function signup() {
+  let data = new FormData();
+  data.append("name", document.getElementById("name").value);
+  data.append("email", document.getElementById("email").value);
+  data.append("password", document.getElementById("pass").value);
+
+  fetch("signup.php", {
+    method: "POST",
+    body: data
+  })
+  .then(res => res.text())
+  .then(res => {
+    if(res === "success"){
+      showModal("Success", "Account Created Successfully!");
+    } else {
+      showModal("Error", res);
+    }
+  });
+}
+
+// LOGIN
+function login() {
+  let data = new FormData();
+  data.append("email", document.getElementById("loginEmail").value);
+  data.append("password", document.getElementById("loginPass").value);
+
+  fetch("login.php", {
+    method: "POST",
+    body: data
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (data.status === "success") {
+      localStorage.setItem("currentUser", JSON.stringify(data));
+      showModal("Welcome", "Login Successful!");
+
+      setTimeout(()=>{
+        window.location.href = "products.html";
+      }, 1200);
+
+    } else {
+      showModal("Login Failed", "Invalid email or password");
+    }
+
+  });
+}
+
+</script>
+
+</body>
+</html>

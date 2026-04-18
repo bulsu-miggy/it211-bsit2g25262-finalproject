@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AEROSTEP Order Tracking</title>
+
+<style>
+:root{
+  --bg:#0B0F1A;
+  --surface:#121826;
+  --card:#1A2235;
+  --pink:#FF4D9D;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --text:#fff;
+  --muted:#AAB2C0;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#333947;
+  color:var(--text);
+  text-align:center;
+}
+
+/* HEADER */
+header{
+  background:var(--surface);
+  padding:15px;
+  display:flex;
+  justify-content:center;
+}
+
+h2{
+  margin:0;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* BOX */
+.box{
+  background:var(--card);
+  margin:20px;
+  padding:20px;
+  border-radius:12px;
+  text-align:left;
+}
+
+/* TRACK */
+.track{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+  position:relative;
+}
+
+.step{
+  width:33%;
+  text-align:center;
+}
+
+.dot{
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin:auto;
+  background:#333;
+}
+
+.step.active .dot{
+  background:var(--cyan);
+}
+
+.line{
+  position:absolute;
+  top:7px;
+  left:10%;
+  right:10%;
+  height:2px;
+  background:#333;
+}
+
+.progress{
+  height:2px;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  width:0%;
+  transition:2s;
+}
+
+
+button{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  color:white;
+  background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/*  MODAL  */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:var(--surface);
+  padding:40px 50px;
+  border-radius:15px;
+  text-align:center;
+  min-width:320px;
+  color:white;
+  box-shadow:0 0 40px rgba(139,92,246,0.6);
+  transform:scale(0.8);
+  transition:0.3s;
+}
+
+.modal.show .modal-box{
+  transform:scale(1);
+}
+
+.modal-box h2{
+  color:var(--cyan);
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  color:var(--muted);
+}
+
+.modal-box button{
+  margin-top:20px;
+  width:auto;
+  padding:10px 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>ORDER TRACKING</h2>
+</header>
+
+<div class="box" id="orderBox"></div>
+
+<div class="box">
+
+<h3>Delivery Status</h3>
+
+<div class="track">
+
+  <div class="step active" id="s1"><div class="dot"></div>Processing</div>
+  <div class="step" id="s2"><div class="dot"></div>Shipping</div>
+  <div class="step" id="s3"><div class="dot"></div>Delivered</div>
+
+  <div class="line">
+    <div class="progress" id="progress"></div>
+  </div>
+
+</div>
+
+
+
+<button onclick="location.href='products.html'">Back to Shop</button>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">Message</h2>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+
+//  MODAL 
+function showModal(title, msg){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+// LOAD ORDER
+function loadOrder(){
+
+  let order = JSON.parse(localStorage.getItem("order"));
+
+  if(!order){
+    document.getElementById("orderBox").innerHTML =
+      "<h3>No Order Found</h3>";
+
+    showModal("No Order", "You have not placed any order yet.");
+    return;
+  }
+
+  let html = `
+    <h3>Customer Info</h3>
+    <p><b>Name:</b> ${order.name}</p>
+    <p><b>Phone:</b> ${order.phone}</p>
+    <p><b>Address:</b> ${order.address}</p>
+    <p><b>Payment:</b> ${order.payment}</p>
+
+    <h3>Items</h3>
+  `;
+
+  order.items.forEach(i=>{
+    html += `<p>${i.name} - P${i.price}</p>`;
+  });
+
+  document.getElementById("orderBox").innerHTML = html;
+}
+
+// DELIVERY ANIMATION
+function start(){
+
+  setTimeout(()=>{
+    document.getElementById("progress").style.width="50%";
+    document.getElementById("s2").classList.add("active");
+  },2000);
+
+  setTimeout(()=>{
+    document.getElementById("progress").style.width="100%";
+    document.getElementById("s3").classList.add("active");
+
+    showModal("Delivered", "Your order has arrived successfully!");
+  },5000);
+}
+
+loadOrder();
+start();
+
+</script>
+
+</body>
+</html>
