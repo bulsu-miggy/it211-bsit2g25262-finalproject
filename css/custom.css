@@ -188,9 +188,9 @@ h1 {
 /* PROFILE FORM STYLES */
 .profile-form {
     max-width: 1000px;
-    margin: 0 auto; /* This centers the entire form on the page */
+    margin: 0 auto; 
     position: relative;
-    padding-top: 140px; /* Gives room for the avatar box above the inputs */
+    padding-top: 140px; /
 }
 
 .form-group {
@@ -231,7 +231,7 @@ h1 {
 .avatar-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* This crops the image perfectly to fill the square without stretching */
+    object-fit: cover; 
     border-radius: 10px;
 }
 

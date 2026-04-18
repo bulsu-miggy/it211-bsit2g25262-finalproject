@@ -1,24 +1,15 @@
 <?php
-// Database connection settings
 $dbservername = "localhost";
 $dbusername = "root";
 $dbpassword = "";
 $dbname = "messi";
 
 try {
-    $conn = new PDO("mysql:host=$dbservername;port=3306", $dbusername, $dbpassword);
+    $conn = new PDO("mysql:host=$dbservername;port=3306;dbname=$dbname", $dbusername, $dbpassword);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE DATABASE IF NOT EXISTS ". $dbname;
-    
-    try {
-        $conn->exec($sql);
-    } catch (PDOException $th) {
-        //echo "<br> Database Already Exists";
-    }
 
-    $sql1 = "use ". $dbname;
-    $conn->exec($sql1);
-    // use exec() because no results are returned
+    // Auto-create users table with ALL columns if it does not exist
+   // Auto-create users table with ALL columns if not exists
     $table_sql = "CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         first_name VARCHAR(50) NOT NULL,
@@ -35,9 +26,7 @@ try {
     )";
     $conn->exec($table_sql);
 
-
-
-} catch (PDOException $e) {
+} catch(PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
 ?>

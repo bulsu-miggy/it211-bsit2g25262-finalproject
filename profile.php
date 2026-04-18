@@ -1,214 +1,173 @@
 <?php
 session_start();
-require "dbconfig.php";
+require "connect.php"; 
 
-// Redirect if not logged in
+// 1. Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
 $user_id = $_SESSION['user_id'];
-$error   = "";
-$success = "";
+$success_msg = "";
+$error_msg = "";
 
-if (isset($_POST['save_profile'])) {
-    $username = trim($_POST['username']);
-    $first    = trim($_POST['first_name']);
-    $last     = trim($_POST['last_name']);
-    $email    = trim($_POST['email']);
-    $phone    = trim($_POST['phone']);
-    $address  = trim($_POST['address']);
-    $gender   = trim($_POST['gender']);
-    $birthday = trim($_POST['month']) . " " . trim($_POST['day']) . ", " . trim($_POST['year']);
+// 2. Handle Profile Update
+if (isset($_POST['update_profile'])) {
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $email    = $_POST['email'];
 
     try {
-        // Check if username is already taken by another user
-        $check = $conn->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
+        // Check if username is taken by someone else
+        $check = $conn->prepare("SELECT id FROM customers WHERE username = ? AND id != ?");
         $check->execute([$username, $user_id]);
-
+        
         if ($check->fetch()) {
-            $error = "Username already taken! Please choose another.";
+            $error_msg = "Username is already taken by another user.";
         } else {
-            $profile_image = null;
-
-            // Handle profile image upload
-            if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] == 0) {
-                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                $file_type = mime_content_type($_FILES['profile_img']['tmp_name']);
-
-                if (in_array($file_type, $allowed_types)) {
-                    $target_dir = "uploads/";
-
-                    // Make sure uploads folder exists
-                    if (!is_dir($target_dir)) {
-                        mkdir($target_dir, 0755, true);
-                    }
-
-                    $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
-                    $new_filename = "user_" . $user_id . "." . $ext;
-                    $target_file  = $target_dir . $new_filename;
-
-                    if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $target_file)) {
-                        $profile_image = $target_file;
-                    }
-                } else {
-                    $error = "Only JPG, PNG, GIF, and WEBP images are allowed.";
-                }
-            }
-
-            if ($error === "") {
-                if ($profile_image) {
-                    $sql  = "UPDATE users SET username=?, first_name=?, last_name=?, birthday=?, address=?, phone=?, gender=?, email=?, profile_image=? WHERE id=?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute([$username, $first, $last, $birthday, $address, $phone, $gender, $email, $profile_image, $user_id]);
-                } else {
-                    $sql  = "UPDATE users SET username=?, first_name=?, last_name=?, birthday=?, address=?, phone=?, gender=?, email=? WHERE id=?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute([$username, $first, $last, $birthday, $address, $phone, $gender, $email, $user_id]);
-                }
-
-                $_SESSION['username'] = $username;
-                $success = "Profile updated successfully!";
-            }
+            // Update the database
+            $stmt = $conn->prepare("UPDATE customers SET fullname = ?, username = ?, email = ? WHERE id = ?");
+            $stmt->execute([$fullname, $username, $email, $user_id]);
+            
+            // Update session name for the header
+            $_SESSION['username'] = $username;
+            $success_msg = "Profile updated successfully!";
         }
     } catch (PDOException $e) {
-        $error = "Something went wrong. Please try again.";
+        $error_msg = "Update failed: " . $e->getMessage();
     }
 }
 
-// Fetch current user data for the form
-$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+// 3. Fetch current user data
+$stmt = $conn->prepare("SELECT * FROM customers WHERE id = ?");
 $stmt->execute([$user_id]);
-$user = $stmt->fetch();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Split birthday into parts for the form
-$b_month = $b_day = $b_year = "";
-if (!empty($user['birthday']) && strpos($user['birthday'], ',') !== false) {
-    $parts = explode(" ", $user['birthday']);
-    if (count($parts) >= 3) {
-        $b_month = $parts[0];
-        $b_day   = rtrim($parts[1], ',');
-        $b_year  = $parts[2];
-    }
-}
+$display_name = $_SESSION['username'] ?? "User";
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportify - Your Profile</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/custom.css">
+    <title>My Profile - SPORTIFY</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-card {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            max-width: 600px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .save-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            font-weight: 800;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .msg {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .success { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid #00ff00; }
+        .error { background: rgba(255, 0, 0, 0.1); color: #ff0000; border: 1px solid #ff0000; }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="container nav-flex">
-            <a href="homepage.php" class="logo">SPORTIFY</a>
-            <div class="nav-icons">
-                <a href="profile.php" style="color: black; margin-right: 15px;"><i class="fas fa-user"></i></a>
-                <a href="cart.php" style="color: black; margin-right: 15px;"><i class="fas fa-shopping-cart"></i></a>
-                <a href="logout.php" style="color: black;"><i class="fas fa-sign-out-alt"></i></a>
-            </div>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box"><img src="image/logo.jpg" alt="Logo" style="width:100%;"></div>
+           
+            <h1 class="logo-text">SPORTIFY</h1>
         </div>
-    </header>
+        <nav class="nav-menu">
+            <a href="homepage.php" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="order.php" class="nav-item"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="products.php" class="nav-item"><i class="fas fa-box"></i> Products</a>
+            <a href="categories.php" class="nav-item"><i class="fas fa-filter"></i> Filters</a>
+            <a href="customers.php" class="nav-item"><i class="fas fa-users"></i> Customers</a>
+            <a href="analytics.php" class="nav-item"><i class="fas fa-chart-line"></i> Analytics</a>
+            <div class="nav-divider"></div>
+            <a href="profile.php" class="nav-item active"><i class="fas fa-user-gear"></i> Profile</a>
+            <a href="logout.php" class="nav-item logout-btn"><i class="fas fa-power-off"></i> Logout</a>
+        </nav>
+    </aside>
 
-    <main class="profile-container">
-        <h1>Your Profile</h1>
-
-        <?php if ($error !== "")   echo "<p style='color:red;'>"   . htmlspecialchars($error)   . "</p>"; ?>
-        <?php if ($success !== "") echo "<p style='color:green;'>" . htmlspecialchars($success) . "</p>"; ?>
-
-        <form method="POST" class="profile-form" enctype="multipart/form-data">
-
-            <div class="avatar-box">
-                <?php if (!empty($user['profile_image'])): ?>
-                    <img src="<?php echo htmlspecialchars($user['profile_image']); ?>" style="width:100%; height:100%; object-fit:cover; border-radius:10px;" alt="Profile Picture">
-                <?php endif; ?>
+    <main class="content-area">
+        <header class="top-header">
+            <div class="header-title-area">
+                <h1>Account Settings</h1>
+             
+                <p>Manage your personal information</p>
             </div>
-
-            <div class="form-group" style="text-align: center; margin-top: 10px;">
-                <label style="font-size: 14px; font-weight: bold;">Change Profile Picture</label><br>
-                <input type="file" name="profile_img" accept="image/*" style="border: none; padding: 10px 0;">
+            <div class="header-actions">
+                <div class="user-pill"><span><?php echo htmlspecialchars($display_name); ?></span></div>
             </div>
+        </header>
 
-            <div class="form-group">
-                <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" placeholder="Username*" required>
+        <section style="margin-top: 30px;">
+            <?php if ($success_msg): ?>
+                <div class="msg success"><?php echo $success_msg; ?></div>
+            <?php endif; ?>
+
+            <?php if ($error_msg): ?>
+                <div class="msg error"><?php echo $error_msg; ?></div>
+            <?php endif; ?>
+
+            <div class="profile-card">
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="fullname" value="<?php echo htmlspecialchars($user['fullname']); ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                    </div>
+
+                    <button type="submit" name="update_profile" class="save-btn">Save Changes</button>
+                </form>
             </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="text" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" placeholder="First Name*" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" placeholder="Last Name*" required>
-                </div>
-            </div>
-
-            <div class="form-row three-cols">
-                <div class="form-group">
-                    <input type="text" name="month" value="<?php echo htmlspecialchars($b_month); ?>" placeholder="Month*">
-                </div>
-                <div class="form-group">
-                    <input type="text" name="day" value="<?php echo htmlspecialchars($b_day); ?>" placeholder="Day*">
-                </div>
-                <div class="form-group">
-                    <input type="text" name="year" value="<?php echo htmlspecialchars($b_year); ?>" placeholder="Year*">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="address" value="<?php echo htmlspecialchars($user['address'] ?? ''); ?>" placeholder="Address*">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="tel" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" placeholder="Phone No.*" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="gender" value="<?php echo htmlspecialchars($user['gender'] ?? ''); ?>" placeholder="Gender*">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Email*" required>
-            </div>
-
-            <button type="submit" name="save_profile" class="btn-save">Save</button>
-        </form>
+        </section>
     </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <a href="homepage.php" class="logo">SPORTIFY</a>
-                    <p>We have clothes that suit your style and which you're proud to wear. From women to men.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul><li><a href="#">About</a></li><li><a href="#">Features</a></li><li><a href="#">Works</a></li><li><a href="#">Career</a></li></ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Help</h4>
-                    <ul><li><a href="#">Customer Support</a></li><li><a href="#">Delivery Details</a></li><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#">Privacy Policy</a></li></ul>
-                </div>
-                <div class="footer-col">
-                    <h4>FAQ</h4>
-                    <ul><li><a href="#">Account</a></li><li><a href="#">Manage Deliveries</a></li><li><a href="#">Orders</a></li><li><a href="#">Payments</a></li></ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Resources</h4>
-                    <ul><li><a href="#">Free eBooks</a></li><li><a href="#">Development Tutorial</a></li><li><a href="#">How to - Blog</a></li><li><a href="#">Youtube Playlist</a></li></ul>
-                </div>
-            </div>
-            <hr class="footer-divider">
-            <p class="copyright">Sportify &copy; 2000-2026, All Rights Reserved</p>
-        </div>
-    </footer>
+</div>
 
 </body>
 </html>
