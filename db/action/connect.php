@@ -1,6 +1,6 @@
 <?php
 $host = "localhost";
-$dbname = "lynx_db";
+$dbname = "it211_g1g1";
 $username = "root";
 $password = "";
 

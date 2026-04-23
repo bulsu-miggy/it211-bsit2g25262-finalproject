@@ -305,32 +305,6 @@ if (!isset($_SESSION["username"]) || !isset($_SESSION["password"])) {
     }
 
 
-      const btnGroup = document.getElementById('profileBtnGroup');
-      const editBtn = document.getElementById('profileEditBtn');
-
-      fields.forEach(field => {
-        const display = document.getElementById('profile-' + field);
-        const input = document.getElementById('profile' + field.charAt(0).toUpperCase() + field.slice(1) + 'Input');
-        if (display && input) {
-          if (profileEditMode) {
-            display.classList.add('hidden');
-            input.classList.add('show');
-          } else {
-            display.classList.remove('hidden');
-            input.classList.remove('show');
-          }
-        }
-      });
-
-      if (profileEditMode) {
-        btnGroup.classList.add('show');
-        editBtn.style.display = 'none';
-        document.getElementById('profileFirstNameInput').focus();
-      } else {
-        cancelProfileEdit();
-      }
-    }
-
     function saveProfileChanges() {
       const username = document.getElementById('profileUsernameInput').value;
       const firstName = document.getElementById('profileFirstNameInput').value;
@@ -360,36 +334,44 @@ if (!isset($_SESSION["username"]) || !isset($_SESSION["password"])) {
         body: formData
       }).then(response => response.text())
       .then(text => {
+
         try {
           const data = JSON.parse(text);
+
+          if (data.success) {
+            document.getElementById('profile-username').textContent = username;
+            document.getElementById('profileUsernameInput').value = username;
+            document.getElementById('profile-firstName').textContent = firstName;
+            document.getElementById('profile-lastName').textContent = lastName;
+            document.getElementById('profile-email').textContent = email;
+            document.getElementById('profile-phone').textContent = phone;
+            localStorage.setItem('userFirstName', firstName);
+            localStorage.setItem('userLastName', lastName);
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userPhone', phone);
+            if (data.newUsername) {
+              localStorage.setItem('userUsername', data.newUsername);
+            }
+            alert('Profile updated successfully');
+            if (data.reload) {
+              location.reload();
+            } else {
+              cancelProfileEdit();
+            }
+          } else {
+            alert('Error updating profile: ' + (data.error || 'Unknown error'));
+          }
+
+
         } catch (e) {
+
           console.error('JSON Parse Error:', e, text);
           alert('Server error - invalid response');
           return;
         }
-        if (data.success) {
-          document.getElementById('profile-username').textContent = username;
-          document.getElementById('profileUsernameInput').value = username;
-          document.getElementById('profile-firstName').textContent = firstName;
-          document.getElementById('profile-lastName').textContent = lastName;
-          document.getElementById('profile-email').textContent = email;
-          document.getElementById('profile-phone').textContent = phone;
-          localStorage.setItem('userFirstName', firstName);
-          localStorage.setItem('userLastName', lastName);
-          localStorage.setItem('userEmail', email);
-          localStorage.setItem('userPhone', phone);
-          if (data.newUsername) {
-            localStorage.setItem('userUsername', data.newUsername);
-          }
-          alert('Profile updated successfully');
-          if (data.reload) {
-            location.reload();
-          } else {
-            cancelProfileEdit();
-          }
-        } else {
-          alert('Error updating profile: ' + (data.error || 'Unknown error'));
-        }
+
+        
+
       }).catch(error => {
         alert('Error: ' + error);
       });
@@ -633,7 +615,26 @@ fetch('db/action/manageaddress.php', {
       });
     });
   });
-// \n  </script>\n\n  <script>\n  $(document).ready(function() {\n    $('#logout-trigger').click(function(e) {\n      e.preventDefault();\n      Swal.fire({\n        title: 'Are you sure?',\n        text: \"You will be logged out!\",\n        icon: 'warning',\n        showCancelButton: true,\n        confirmButtonColor: '#000000',\n        cancelButtonColor: '#6c757d',\n        confirmButtonText: 'Yes, logout!'\n      }).then((result) => {\n        if (result.isConfirmed) {\n          window.location.href = 'logout.php';\n        }\n      });\n    });\n  });\n  </script>\n\n  <!-- Footer - Very Bottom -->\n
+  </script>
+  <script>
+    $(document).ready(function() {
+      $('#logout-trigger').click(function(e) {
+        e.preventDefault();
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You will be logged out!", 
+          icon: 'warning', 
+          showCancelButton: true, 
+          confirmButtonColor: '#000000',
+          cancelButtonColor: '#6c757d', 
+          confirmButtonText: 'Yes, logout!'})
+         .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'logout.php'; }
+          }); 
+      }); });
+  </script><!-- Footer - Very Bottom -->
   <footer class="footer-banner" style="background: black; padding: 60px 20px; color: white; font-family: 'Rubik', sans-serif;">
     <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; align-items: start;">
       <div>

@@ -14,7 +14,7 @@ if (isset($_POST['delete_id']) && is_numeric($_POST['delete_id'])) {
   }
   
   // Fetch products from the unified products table with new columns
-  $query = "SELECT id, title, gender, sub_category, price, stock FROM products ORDER BY id DESC";
+  $query = "SELECT id, title, sub_category, price, stock FROM products ORDER BY id DESC";
   $stmt = $conn->query($query);
   $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -178,7 +178,7 @@ if (isset($_POST['delete_id']) && is_numeric($_POST['delete_id'])) {
                 </div>
               </td>
               <td>
-                <span class="gender-badge"><?php echo htmlspecialchars($row['gender']); ?></span>
+                <span class="gender-badge"><?php echo isset($row['gender'])? htmlspecialchars($row['gender']) : '--'; ?></span>
               </td>
               <td>
                 <span class="sub-cat-label"><?php echo htmlspecialchars($row['sub_category']); ?></span>

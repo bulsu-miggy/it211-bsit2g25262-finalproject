@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname= "lynx_db";
+$dbname= "it211_g1g1";
 
 try {
     $conn = new PDO("mysql:host=".$servername.";port=3306", $username, $password);
