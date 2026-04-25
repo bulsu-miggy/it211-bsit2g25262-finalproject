@@ -2,7 +2,7 @@
 $dbservername = "localhost";
 $dbusername = "root";
 $dbpassword = "";
-$dbname = "messi";
+$dbname = "it211_g2g3";
 
 try {
     $conn = new PDO("mysql:host=$dbservername;port=3306;dbname=$dbname", $dbusername, $dbpassword);
@@ -25,6 +25,8 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     $conn->exec($table_sql);
+
+    echo "table created";
 
 } catch(PDOException $e) {
     die("Connection failed: " . $e->getMessage());
