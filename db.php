@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "aerostep";
+$db = "it211_g1g5";
 
 $conn = new mysqli($host, $user, $pass, $db);
 
