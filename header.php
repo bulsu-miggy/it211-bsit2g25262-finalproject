@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Base URL points to the root folder
-$base_url     = "/Vanguard's_Delights/"; 
+$base_url     = "/it211-bsit2g25262-finalproject/"; 
 
 // Verified Paths based on your image structure
 $cart_path    = $base_url . "customerUI/Cart_Checkout/cart.php";

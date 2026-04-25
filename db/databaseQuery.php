@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "vanguards_delights_db";
+$dbname = "it211_g2g1";
 
 try {
     // 1. Initial Connection

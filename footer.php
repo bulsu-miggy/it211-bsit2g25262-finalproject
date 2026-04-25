@@ -8,7 +8,7 @@ $project_root = str_replace(basename($_SERVER['PHP_SELF']), '', $_SERVER['PHP_SE
 
 // Combine them to create a dynamic Base URL
 // If your project is in a folder named 'VANGUARD_S_DELIGHTS', this will point there.
-$base_url = $protocol . $host . "/Vanguard's_Delights/"; 
+$base_url = $protocol . $host . "/it211-bsit2g25262-finalproject/"; 
 ?>
 <footer class="vd-footer">
     <div class="vd-footer-container">

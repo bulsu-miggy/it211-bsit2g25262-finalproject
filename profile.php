@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 
 // Fetch user data from DB
 $stmt = $conn->prepare("
-    SELECT u.first_name, u.middle_name, u.last_name, u.username, u.email, u.gender, u.birthday,
+    SELECT u.first_name, u.middle_name, u.last_name, u.username,
            c.phone_number
     FROM users u
     LEFT JOIN contact_numbers c ON u.user_id = c.user_id
