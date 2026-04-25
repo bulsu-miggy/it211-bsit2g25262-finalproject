@@ -8,7 +8,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "solis_db"; 
+$dbname = "it211_g1g6"; 
 
 try {
     $conn = new PDO("mysql:host=$servername", $username, $password);
@@ -221,6 +221,8 @@ try {
     if ($orderItemColumn && $orderItemColumn['Null'] === 'NO') {
         $conn->exec("ALTER TABLE order_items MODIFY product_id INT(11) DEFAULT NULL");
     }
+
+    echo "db_created_successfully";
 
 } catch(PDOException $e) {
     die("Database Setup Error: " . $e->getMessage());
