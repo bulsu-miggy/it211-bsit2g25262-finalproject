@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname= "project_WST";
+$dbname= "it211_g2g5";
 
 try {
     $conn = new PDO("mysql:host=$servername;port=3306", $username, $password);

@@ -3,7 +3,7 @@
 $dbservername = "localhost";
 $dbusername   = "root";
 $dbpassword   = "";
-$dbname       = "project_wst"; // lowercase — consistent across all files
+$dbname       = "it211_g2g5"; // lowercase — consistent across all files
 
 try {
     $conn = new PDO(
