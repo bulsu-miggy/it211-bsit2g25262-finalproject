@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";     // Default username sa XAMPP
 $password = "";         // Default password sa XAMPP (empty)
-$dbname = "sparkverse_db"; // Siguraduhin na ito ang pangalan ng DB mo sa phpMyAdmin
+$dbname = "it211_g2g4"; // Siguraduhin na ito ang pangalan ng DB mo sa phpMyAdmin
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
