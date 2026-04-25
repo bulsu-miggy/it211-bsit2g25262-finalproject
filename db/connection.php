@@ -12,14 +12,14 @@
 $servername = "localhost";  // MySQL server address
 $username = "root";         // MySQL username
 $password = "";             // MySQL password (empty for local development)
-$dbname = "sipflaskdb";     // Database name (created if doesn't exist)
+$dbname = "it211_g1g4";     // Database name (created if doesn't exist)
 
 try {
     // ==========================================
     // CREATE DATABASE CONNECTION
     // ==========================================
     // Establish PDO connection to MySQL server
-    $conn = new PDO("mysql:host=$servername", $username, $password);
+    $conn = new PDO("mysql:host=$servername;port=3306", $username, $password);
     
     // Set error mode to throw exceptions (easier error handling)
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -156,9 +156,10 @@ try {
         }
     } catch (PDOException $e) {
         // Silently skip - seeding might fail if data already exists
+        echo $e;
     }
 
-    //echo "Connected successfully and database/table ready";
+    echo "Connected successfully and database/table ready";
 } catch(PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
     die();

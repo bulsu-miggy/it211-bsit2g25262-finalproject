@@ -3,7 +3,7 @@
 $dbservername = "localhost";
 $dbusername = "root";   
 $dbpassword = "";
-$dbname= "sipflaskdb";
+$dbname= "it211_g1g4";
 
 $conn = new PDO("mysql:host=$dbservername;port=3306", $dbusername, $dbpassword);
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
