@@ -25,9 +25,9 @@
     if(strcmp($password, $cpassword) == 0)
     {
       try {
-        require 'dbconfig.php';
+        require '../dbconfig.php';
 
-        $datacheck = "SELECT * FROM annyeonghaven.user_profile WHERE username='$username' OR email='$email'" ;
+        $datacheck = "SELECT * FROM it211_g2g2.user_profile WHERE username='$username' OR email_address='$email'" ;
         $query = $conn->query($datacheck);
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -46,9 +46,9 @@
               $passwordhash
             ];
 
-            $q_adduser = $conn->prepare("INSERT INTO annyeonghaven.user_profile (
+            $q_adduser = $conn->prepare("INSERT INTO it211_g2g2.user_profile (
                 username,
-                email,
+                email_address,
                 password
             ) VALUES (?,?,?)");
 
